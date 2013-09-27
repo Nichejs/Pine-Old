@@ -45,11 +45,18 @@
 	  	$("#bg").attr('width',WIDTH);
 		$("#bg").attr('height',HEIGHT);
 		
-		ctx.translate(0,HEIGHT/2);
+		
+		/*// Isometric
+	    ctx.translate(WIDTH/2, 0);
+	    ctx.scale(1, 0.5);
+	    ctx.rotate(45 * Math.PI /180);*/
+	  	
+	  	
+	  	//ctx.translate(0,HEIGHT/2);
 	  	
 		// Funciones importantes:
 		function clear() {
-			ctx.clearRect(0, 0-HEIGHT/2, WIDTH, HEIGHT);
+			ctx.clearRect(0, 0, WIDTH, HEIGHT);
 		}
 		
 		function circle(x,y,rad,color){
@@ -87,9 +94,87 @@
 		var t = 0;
 		// Move 0,0 to the center of the screen
 		function draw(e) {
-			ctx.rect(0, 0-HEIGHT/2, WIDTH, HEIGHT);
-			ctx.fillStyle = "rgba(50,255,50,1)";
-			ctx.fill();
+			ctx.fillStyle = "rgba(200,200,200,1)";
+			ctx.fillRect(0, 0, WIDTH, HEIGHT);
+			
+			drawSector();
+		}
+		
+		// Draw a new sector of the map
+		function drawSector(){
+			/* Este array se recibiria normalmente por parametro
+			   generado a su vez por el servidor, pero de momento
+			   lo inserto a mano.
+			 */
+			// Es un objeto, de tipo sector
+			// Lo siguiente son las caracteristicas
+			// el tipo define el suelo predominante. Si eso... 
+			
+			// Las coordenadas del canvas van del 0,0 arriba a la izquierda hacia abajo
+			// x es normal, y crece hacia abajo.....
+			
+			var sector = {
+				pos		: {x:0, y:0},
+				type	: 0,
+				geography : [
+					{
+						pos : {x:4, y:2},
+					 	type : 'water'
+					 },
+					{
+						pos : {x:8, y:4},
+						type : 'gold'
+					}
+				],
+				objects : [
+					{
+						pos : {x:17, y:8},
+						type : 'tree'
+					},
+					{
+						pos : {x:7,y:10},
+						type : 'tree'
+					}
+				]
+			};
+			
+			// Esto deberia estar en otro lugar declarado, o en una base de datos
+			var objects = {
+				tree : {
+					width : 20,
+					height : 60,
+					color : "rgba(255,75,20,1)"
+				}
+			};
+			
+			// Draw the received data. Supposing sectors of 20x20px (They will be larger)
+			// Fill background with main type color
+			var style = {
+					water : "rgba(50,50,255,1)",
+					gold : "rgba(200,200,10,1)",
+					normal : "rgba(100,255,100,1)"
+				};
+			// Luego habra que recolocar TODAS las variables...
+			var sectorSize = 20,
+				blockSize = 20;
+			// Pinta el fondo del color/textura principal
+			ctx.fillStyle = style['normal'];
+			console.log(style.normal);
+			ctx.fillRect(0, 0, sectorSize*blockSize, sectorSize*blockSize);
+			// Coloca la geografia
+			for(var i=0;i<sector.geography.length;i++){
+				console.log(sector.geography[i]);
+				ctx.fillStyle = style[sector.geography[i].type];
+				ctx.fillRect(sector.geography[i].pos.x*blockSize, sector.geography[i].pos.y*blockSize, blockSize, blockSize);
+			}
+			
+			// Coloca los objetos
+			for(var i=0;i<sector.objects.length;i++){
+				console.log(sector.geography[i]);
+				var current = objects[sector.objects[i].type];
+				ctx.fillStyle = current.color;
+				ctx.fillRect(sector.objects[i].pos.x*blockSize, sector.objects[i].pos.y*blockSize, current.width, current.height);
+			}
 		}
 		
 		function frame(){
@@ -108,7 +193,7 @@
 		resizeCanvas();
 		$(window).resize(resizeCanvas);
 		$(document).mousemove(mouseMove);
-		drawInterval = setInterval( frame, 1 );
+		//drawInterval = setInterval( frame, 1 );
 		draw();
 	});
 </script>
