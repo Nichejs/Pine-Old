@@ -16,7 +16,11 @@
         Open RPG
       </div>
       
-      <canvas id="maincanvas" width="900" height="500"></canvas>
+      <div style="position:relative;">
+      	<canvas id="maincanvas" width="900" height="500"></canvas>
+      	<!-- Overlay for night mode -->
+      	<div style="background:rgba(0,0,40,0.2); z-index:999; position:absolute; top:0px; left:0px; width:900px; height:500px;"></div>
+      </div>
       <i>Click the canvas above and use the arrow keys to move the character around. Use the space to jump. Watch the density map in action by moving the character up the ramp or jumping on the cubes!</i>
       
     </div>
@@ -24,10 +28,18 @@
     <script>
       var canvasElement = document.getElementById('maincanvas');
       sheetengine.scene.init(canvasElement, {w:900,h:500});
+      
+      // Adjust the light source
+      // Following line creates "twilight" shadows
+      sheetengine.shadows.lightSource = { x: 1, y: -5, z: 1 };
+      // The following is how dark shadows are
+      sheetengine.shadows.shadowAlpha = 0.5;
+      sheetengine.shadows.shadeAlpha = 0.5;
+
 
       // define some basesheets
-      for (var x=-1; x<=3; x++) {
-        for (var y=-1; y<=3; y++) {
+      for (var x=-1; x<=1; x++) {
+        for (var y=-1; y<=1; y++) {
           var basesheet = new sheetengine.BaseSheet({x:x*200,y:y*200,z:0}, {alphaD:90,betaD:0,gammaD:0}, {w:200,h:200});
           basesheet.color = 'rgba('+(50+x*20)+','+(50+y*20)+',50,1)';
         }
@@ -211,12 +223,14 @@
           animateCharacter(character);
           character.animationState++;
           
-          // move center
+          // Set center on the character
           sheetengine.scene.setCenter({x:character.centerp.x, y:character.centerp.y, z:0});
           
           // calculate sheets and draw scene
           sheetengine.calc.calculateChangedSheets();
           sheetengine.drawing.drawScene();
+          
+          
         }
       };
       setInterval(mainloop, 30);
