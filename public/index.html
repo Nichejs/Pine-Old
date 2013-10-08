@@ -17,11 +17,25 @@
 			<div style="background:rgba(0,0,40,0.2); z-index:999; position:absolute; top:0px; left:0px; width:900px; height:500px;"></div>
 		<!-- -->
 	</div>
-	  
+
+	<div style="position:relative;">
+		<textarea id="chatOut" rows="20" cols="50"></textarea>
+		<input type="text" id="chatIn">
+	</div>
+	
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="assets/js/open-rpg/open-rpg-1.js"></script>
+	<script type="text/javascript" src="assets/js/open-rpg/chat-open-rpg.js"></script>
+	
 	<script type="text/javascript">
 		var canvasElement = document.getElementById('game');
+		var chatIn = document.getElementById('chatIn');
+		var chatOut = document.getElementById('chatOut');
+		// Launch
 		OpenRPG.init(canvasElement, {w:900,h:500});
+		// Muevo Chat a OpenRPG
+		OpenRPG.chat(chatIn, chatOut);
 	</script>
 </body>
 </html>
