@@ -1,0 +1,27 @@
+{
+  "name": "OpenRPG",
+  "version": "0.0.1",
+  "description": "Massive Multiplayer Online Game",
+  "main": "server.js",
+  "dependencies": {
+    "express": "~3.3.4",
+    "socket.io": "~0.9.16"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Open-RPG/open-rpg.git"
+  },
+  "keywords": [
+    "openrpg"
+  ],
+  "author": "Nicolas Lozano Arguelles, Alejandro Urbano Alvarez",
+  "license": "GNU GPL",
+  "bugs": {
+    "url": "https://github.com/Open-RPG/open-rpg/issues"
+  }
+}
