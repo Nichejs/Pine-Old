@@ -12,29 +12,45 @@ console.log("Express server listening on port 3000");
 
 // Allow access to /public folder
 app.configure(function () {
+	app.use(express.bodyParser());
 	app.use(app.router);
     app.use(express.static(path.join(__dirname,'/public'), {maxAge: 0}));
 });
 
 // CouchDB Access
-app.get('/api/db', function (req, res) {
+app.post('/api/db', function (req, res) {
 	// Nano!
     var nano = require('nano')('http://pi:pi@localhost:8000');
+    if(req.body == undefined){
+    	req.body = {user : {type : 'Unsupported'}};
+    }
     
-    // Users handle
-    var users = nano.use('users');
-    var response = '';
-    users.view('userList', 'userList', function(err, body) {
-	  if (!err) {
-	    body.rows.forEach(function(doc) {
-	      response += "\n"+doc.value;
-	      console.log(doc.value);
-	    });
-	    res.send(response);
-		console.log("Response: ",response);
-		res.end();
-	  }
-	});
+    console.log("POST to /api/db: ", req.body.type);
+    
+    //TODO Improve this section
+    switch(req.body.type){
+    	case 'login':
+    		res.send('Received login data');
+    		break;
+    	case 'listUsers':
+	    	// Users handle
+		    var users = nano.use('users');
+		    var response = '';
+		    users.view('userList', 'userList', function(err, body) {
+			  if (!err) {
+			    body.rows.forEach(function(doc) {
+			      response += "\n"+doc.value;
+			      console.log(doc.value);
+			    });
+			    res.send(response);
+				console.log("Response: ",response);
+			  }
+			});
+			break;
+		default:
+			res.send(JSON.stringify('Unsupported'));
+    }
+    res.end();
 });
 
 

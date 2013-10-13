@@ -20,7 +20,11 @@
  			socketHost : 'http://c.uplei.com:9002',
  			socket : null,
  			debug : false,
- 			canvas : {canvasElement:null,size:null}
+ 			canvas : {canvasElement:null,size:null},
+ 			user : {
+ 				id : null,
+ 				name : null
+ 			}
  		};
 
 		/**
@@ -33,12 +37,50 @@
 			OpenRPG.canvas.size=size;
 	
 			console.log("OpenRPG started");
+			
+			if(!OpenRPG.logged()){
+				OpenRPG.displayLogin();
+			}
+			
 			// Start socket
 			OpenRPG.socketStart();
 			ChatOpenRPG.init(OpenRPG);
 		};
 		
+		/**
+		 * Check if current user is logged in
+		 * @return boolean 
+		 */
+		OpenRPG.logged = function(){
+			if(OpenRPG.user.id !== null && OpenRPG.user.id > 0) return true;
+			return false;
+		};
 		
+		
+		/**
+		 * Displays a login box and handles its events. 
+		 */
+		OpenRPG.displayLogin = function(){
+			//TODO Usar un estilo mas guapo para el login
+			var user = prompt("Nombre de usuario"),
+				pass = prompt("Contraseña");
+			
+			// Now we will check against the database
+			$.post("/api/db", { type : "login", user : user, pass: pass }, function( data ){
+				alert( data );
+			}).done(function() {
+				alert( "second success" );
+			}).fail(function() {
+				alert( "error" );
+			}).always(function() {
+				alert( "finished" );
+			}, 'json'); 
+		};
+		
+		
+		/**
+		 * Create a new connection 
+		 */
 		OpenRPG.socketStart = function(){
 			OpenRPG.socket = io.connect(OpenRPG.socketHost);
 			console.log("Socket connected");
