@@ -6,40 +6,60 @@
  * License: GNU GENERAL PUBLIC LICENSE
  */
 
-var OpenRPG = (function() {
-	var OpenRPG = {
-		character : null,
-		map : null,
-		coords : {x:0,y:0},
-		socketHost : 'http://c.uplei.com:9002',
-		socket : null,
-		debug : false
-	};
+ requirejs.config({
+ 	baseUrl: 'assets/js'
+ });
+
+ define(["open-rpg/map_creation-open-rpg","open-rpg/chat-open-rpg" ,"socket"],
+ 	function(MapOpenRPG,ChatOpenRPG ,io){
+		console.log('Loaded OpenRPG');
+ 		var OpenRPG = {
+ 			character : null,
+ 			map : null,
+ 			coords : {x:0,y:0},
+ 			socketHost : 'http://c.uplei.com:9002',
+ 			socket : null,
+ 			debug : false,
+ 			canvas : {canvasElement:null,size:null}
+ 		};
+
+		/**
+		 * Start OpenRPG 
+		 */
+		 OpenRPG.init = function(canvasElement, size){
 	
-	/**
-	 * Start OpenRPG 
-	 */
-	OpenRPG.init = function(canvasElement, size){
-		console.log("OpenRPG started");
-		// Start socket
-		OpenRPG.socketStart();
-		console.log("Socket connected");
-	};
+			//Store canvas information
+			OpenRPG.canvas.canvasElement=canvasElement;
+			OpenRPG.canvas.size=size;
 	
-	OpenRPG.socketStart = function(){
-		OpenRPG.socket = io.connect(OpenRPG.socketHost);
-	};
+			console.log("OpenRPG started");
+			// Start socket
+			OpenRPG.socketStart();
+			ChatOpenRPG.init(OpenRPG);
+		};
+		
+		
+		OpenRPG.socketStart = function(){
+			OpenRPG.socket = io.connect(OpenRPG.socketHost);
+			console.log("Socket connected");
+		};
+		
+		/**
+		 * Sets up the game Chat 
+		 * @param {Object} input
+		 * @param {Object} output
+		 * @requires ChatOpenRPG
+		 */
+		 OpenRPG.chat = function(input, output){
+		 	ChatOpenRPG.incoming(output);
+		 	ChatOpenRPG.outgoing(input);
+		 };
 	
-	/**
-	 * Sets up the game Chat 
-	 * @param {Object} input
-	 * @param {Object} output
-	 * @requires ChatOpenRPG
-	 */
-	OpenRPG.chat = function(input, output){
-		ChatOpenRPG.incoming(output);
-		ChatOpenRPG.outgoing(input);
-	};
+		 OpenRPG.map = function(){
+		 	MapOpenRPG.drawBaseSheet(OpenRPG.canvas.canvasElement, OpenRPG.canvas.size);
+		 };
 	
-	return OpenRPG;
-})();
+		 
+		console.log("Devuelvo OpenRPG");
+		return OpenRPG;
+});
