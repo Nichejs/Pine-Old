@@ -6,8 +6,7 @@ var express = require('express'),
 	path = require('path'),
 	io = require('socket.io').listen(server),
 	nano = require('nano')('http://pi:pi@localhost:8000'),
-	crypto = require('crypto'),
-	sha1 = crypto.createHash('sha1');
+	crypto = require('crypto');
 
 
 server.listen(3000);
@@ -23,7 +22,7 @@ app.configure(function () {
 // CouchDB Access
 app.post('/api/db', function (req, res) {
 	// Nano!
-    var nano = require('nano')('http://pi:pi@localhost:8000');
+	var nano = require('nano')('http://pi:pi@localhost:8000');
     if(req.body == undefined){
     	req.body = {user : {type : 'Unsupported'}};
     }
@@ -33,43 +32,49 @@ app.post('/api/db', function (req, res) {
     //TODO Improve this section
     switch(req.body.type){
     	case 'login':
-    		res.send('Received login data');
+    		// Check if user exists
+    		var users = nano.use('users');
+    		// Sha1 password
+    		var sha1 = crypto.createHash('sha1');
+    		sha1.update(req.body.pass);
+    		
+    		users.view('users','name-pass', {key: [req.body.user, sha1.digest('hex')]}, function (error, view) {
+    			if(error !== null){
+    				console.log(error);
+    				res.send("An error occured");
+    				res.end();
+    			}else{
+    				console.log("Login ok");
+	    			res.send(view);
+	    			res.end();	
+    			}
+    		});
     		break;
     	case 'register':
     		var data = req.body.user,
-    			users = nano.use('users');;
+    			users = nano.use('users');
     		// Sha1 of password
+    		var sha1 = crypto.createHash('sha1');
 		    sha1.update(data.pass);
 		    // Insert in database
 		    //users.insert(data.name, {name: data.name, pass: sha1.digest('hex')});
 		    console.log("Intentando insertar");
 		    users.insert({name: data.name, pass: sha1.digest('hex')}, function(err, body) {
-				if (err) console.err(err);
+				if (err){
+					res.send("No se pudo completar el registro");
+					console.err(err);
+				}
 				console.log('done');
+				res.send("Usuario registrado, bienvenido "+data.name+"!");
+				res.end();
 			});
 		    
-		    response.send("Recibido!");
     		break;
-    	case 'listUsers':
-	    	// Users handle
-		    var users = nano.use('users');
-		    var response = '';
-		    users.view('userList', 'userList', function(err, body) {
-			  if (!err) {
-			    body.rows.forEach(function(doc) {
-			      response += "\n"+doc.value;
-			      console.log(doc.value);
-			    });
-			    res.send(response);
-				console.log("Response: ",response);
-			  }
-			});
-			break;
 		default:
 			res.send(JSON.stringify('Unsupported'));
+			res.end();
     }
-    res.end();
-)};
+});
 
 // GET handle for the API
 app.get('/api/db', function (req, res) {

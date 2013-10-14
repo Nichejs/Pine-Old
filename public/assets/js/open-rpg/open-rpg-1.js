@@ -66,14 +66,8 @@
 				pass = prompt("Contraseña");
 			
 			// Now we will check against the database
-			$.post("/api/db", { type : "login", user : user, pass: pass }, function( data ){
+			$.post("/api/db", { type : "login", name : user, pass: pass }, function( data ){
 				alert( data );
-			}).done(function() {
-				alert( "second success" );
-			}).fail(function() {
-				alert( "error" );
-			}).always(function() {
-				alert( "finished" );
 			}, 'json'); 
 		};
 		

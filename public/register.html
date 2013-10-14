@@ -11,7 +11,8 @@
 <body>
 	<h1>Open RPG</h1>
 	<h2>Registration:</h2>
-	<form action="/api/post" method="post">
+	<form action="/api/db" method="post">
+		<input type="hidden" name="type" value="register" />
 		Username: <input type="text" name="user[name]" />
 		Password: <input type="password" name="user[pass]" />
 		<br />
