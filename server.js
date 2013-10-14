@@ -4,7 +4,10 @@ var express = require('express'),
 	http = require('http'),
 	server = http.createServer(app),
 	path = require('path'),
-	io = require('socket.io').listen(server);
+	io = require('socket.io').listen(server),
+	nano = require('nano')('http://pi:pi@localhost:8000'),
+	crypto = require('crypto'),
+	sha1 = crypto.createHash('sha1');
 
 
 server.listen(3000);
@@ -32,6 +35,21 @@ app.post('/api/db', function (req, res) {
     	case 'login':
     		res.send('Received login data');
     		break;
+    	case 'register':
+    		var data = req.body.user,
+    			users = nano.use('users');;
+    		// Sha1 of password
+		    sha1.update(data.pass);
+		    // Insert in database
+		    //users.insert(data.name, {name: data.name, pass: sha1.digest('hex')});
+		    console.log("Intentando insertar");
+		    users.insert({name: data.name, pass: sha1.digest('hex')}, function(err, body) {
+				if (err) console.err(err);
+				console.log('done');
+			});
+		    
+		    response.send("Recibido!");
+    		break;
     	case 'listUsers':
 	    	// Users handle
 		    var users = nano.use('users');
@@ -51,8 +69,26 @@ app.post('/api/db', function (req, res) {
 			res.send(JSON.stringify('Unsupported'));
     }
     res.end();
-});
+)};
 
+// GET handle for the API
+app.get('/api/db', function (req, res) {
+	
+	// Users handle
+    var users = nano.use('users');
+    var response = '';
+    users.view('userList', 'userList', function(err, body) {
+	  if (!err) {
+	    body.rows.forEach(function(doc) {
+	      response += "\n"+doc.value;
+	      console.log(doc.value);
+	    });
+	    res.send(response);
+		console.log("Response: ",response);
+		res.end();
+	  }
+	});
+});
 
 // SocketIO
 io.sockets.on('connection', function (socket) {

@@ -56,32 +56,23 @@
 		<small><a href="https://github.com/Open-RPG/open-rpg">Fork on Github</a></small>
 	</p>
 	<script src="/assets/js/require_2_1_8.js"></script>
-	<!--<script src="/socket.io/socket.io.js"></script>-->
 	<script type="text/javascript">
 	require.config({
-		/*shim: {
-			'socketio': {
-				exports: 'io'
-			},
-		},
-		wrap: false,*/
 	    paths: {
-	    	socket: 'socket.io',
-	    	jquery: "jquery-2.0.3.min",
+	    	socket: "/socket.io/socket.io",
+	        jquery: "jquery-2.0.3.min",
 	        open_rpg: "assets/js/open-rpg/open-rpg-1",
 	        sheetengine: "sheetengine-src-1.2.0"
 	    }
 	});
 	require(["open_rpg"],function(OpenRPG){
-		
-		console.log("index.html require started");
-		
 		var canvasElement = document.getElementById('game');
 		var chatIn = document.getElementById('chatIn');
 		var chatOut = document.getElementById('chatOut');
 
 		// Launch
 		OpenRPG.init(canvasElement, {w:900,h:500});
+		//chat.log("pase OpenRPG");
 		// Muevo Chat a OpenRPG
 		OpenRPG.chat(chatIn, chatOut);
 
