@@ -3,39 +3,81 @@
 <title>Open RPG</title>
 <style type="text/css">
 	body{
-		margin:0;
+		margin:20px;
 		padding: 0;
+		background:#efefef;
+		font-family:"Gill Sans MT";
+	}
+	h1{
+		text-align:center;
+	}
+	canvas{
+		border:#ccc solid 1px;
+	}
+	#container{
+		position:relative;
+		width:900px;
+		margin:0 auto;
+		background:#f2f2f2;
+		box-shadow:#999 0 0 10px;
+	}
+	#chatIn{
+		background:#fff;
+		border:none;
+		border-top:solid 1px #ccc;
+		height:25px;
+		width:100%;
+	}
+	#chatOut{
+		background:transparent;
+		border:none;
+		outline:none;
+		position:absolute;
+		top:5px;
+		left:5px;
+	}
+	input{
+		padding:3px;
 	}
 </style>
 </head>
 <body>
 	<h1>Open RPG</h1>
-	<div style="position:relative;">
+	<div id="container">
 		<canvas id="game" width="900" height="500"></canvas>
 		<!-- Overlay for night mode -->
 		<!--
 			<div style="background:rgba(0,0,40,0.2); z-index:999; position:absolute; top:0px; left:0px; width:900px; height:500px;"></div>
 		<!-- -->
-	</div>
-
-	<div style="position:relative;">
 		<textarea id="chatOut" rows="20" cols="50"></textarea>
-		<input type="text" id="chatIn">
+		<input type="text" id="chatIn" placeholder="Chat...">
 	</div>
-	
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="/socket.io/socket.io.js"></script>
-	<script type="text/javascript" src="assets/js/open-rpg/open-rpg-1.js"></script>
-	<script type="text/javascript" src="assets/js/open-rpg/chat-open-rpg.js"></script>
-	
+	<p align="center">
+		<small><a href="https://github.com/Open-RPG/open-rpg">Fork on Github</a></small>
+	</p>
+	<script src="/assets/js/require_2_1_8.js"></script>
 	<script type="text/javascript">
+	require.config({
+    paths: {
+    	socket: "/socket.io/socket.io",
+        jquery: "jquery-2.0.3.min",
+        open_rpg: "assets/js/open-rpg/open-rpg-1",
+        sheetengine: "sheetengine-src-1.2.0"
+    }
+});
+	require(["open_rpg"],function(OpenRPG){
 		var canvasElement = document.getElementById('game');
 		var chatIn = document.getElementById('chatIn');
 		var chatOut = document.getElementById('chatOut');
+
 		// Launch
 		OpenRPG.init(canvasElement, {w:900,h:500});
+		//chat.log("pase OpenRPG");
 		// Muevo Chat a OpenRPG
-		OpenRPG.chat(chatIn, chatOut);
+		//OpenRPG.chat(chatIn, chatOut);
+
+		OpenRPG.map();
+	});
 	</script>
 </body>
 </html>

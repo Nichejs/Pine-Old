@@ -11,9 +11,11 @@
 <body>
 	<h1>Open RPG</h1>
 	<h2>Registration:</h2>
-	<form action="/what" method="post">
-		Username: <input type="text" name="user" />
-		Password: <input type="password" name="password" />
+	<form action="/api/post" method="post">
+		Username: <input type="text" name="user[name]" />
+		Password: <input type="password" name="user[pass]" />
+		<br />
+		<input type="submit" value="Register" />
 	</form>
 </body>
 </html>
