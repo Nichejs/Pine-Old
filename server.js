@@ -6,7 +6,12 @@ var express = require('express'),
 	path = require('path'),
 	io = require('socket.io').listen(server),
 	nano = require('nano')('http://pi:pi@localhost:8000'),
-	crypto = require('crypto');
+	crypto = require('crypto'),
+	connect = require('connect'),
+	parseCookie = connect.utils.parseCookie,
+	MemoryStore = connect.middleware.session.MemoryStore,
+	store,
+	users = 0;
 
 
 server.listen(3000);
@@ -14,6 +19,17 @@ console.log("Express server listening on port 3000");
 
 // Allow access to /public folder
 app.configure(function () {
+	app.use(express.cookieParser());
+	app.use(express.session({
+		key: 'OPENRPG_ID',
+    	secret: 'ADRG$WHSRHRWUsdfj@~€7ghzdfhgksdjñ76857hkse',
+    	store: store = new MemoryStore(),
+	    cookie: {
+			path: '/',
+			domain: 'uplei.com',
+			maxAge: 1000 * 60 * 24 // 24 hours
+	    }
+ 	}));
 	app.use(express.bodyParser());
 	app.use(app.router);
     app.use(express.static(path.join(__dirname,'/public'), {maxAge: 0}));
@@ -96,10 +112,43 @@ app.get('/api/db', function (req, res) {
 });
 
 // SocketIO
+
+// Client authorisation
+io.set('authorization', function (data, accept) {
+	console.log("Data: ",data.query);
+	// Now use data.query to handle login
+	// Check if user exists
+	var users = nano.use('users');
+	// Sha1 password
+	var sha1 = crypto.createHash('sha1');
+	sha1.update(data.query.pass);
+	
+	users.view('users','name-pass', {key: [data.query.user, sha1.digest('hex')]}, function (error, view) {
+		if(error !== null){
+			console.log(error);
+			accept(null,false);
+		}else{
+			console.log(view);
+			if(view.rows.length > 0){
+				data.sessionID = view.rows[0].id;
+				console.log("Login ok, user id = "+view.rows[0].id);
+				accept(null, true);
+			}else{
+				accept(null,false);
+			}
+		}
+	});
+});
+
+// Chat
 io.sockets.on('connection', function (socket) {
+	users++;
+	console.log(users+' users online.');
     socket.emit('message', { message: 'ChatServer -> Welcome' });
     socket.on('send', function (data) {
     	console.log("ChatServer -> Received");
         io.sockets.emit('message', data);
     });
+}).on('disconnect', function(){
+	users--;
 });
