@@ -8,8 +8,6 @@
 
  define(["jquery"],function($){
 	
-	console.log('Loaded ChatOpenRPG');
-	
 	var ChatOpenRPG = {
 		OpenRPG : null
 	};
@@ -26,21 +24,19 @@
  	 	
  	 	ChatOpenRPG.OpenRPG.socket.on('connect', function () {
  	 		$(textarea).append('ChatSocket-> Connected');
+ 	 	}).on('message', function(data) {
 
- 	 		ChatOpenRPG.OpenRPG.socket.on('message', function(data) {
+ 			if(data.message) {
+ 				$(textarea).append("\n"+data.message);
+ 			} else {
+ 				console.err("There is a problem:", data);
+ 			}
 
- 	 			if(data.message) {
- 	 				$(textarea).append("\nClient-> "+data.message);
- 	 			} else {
- 	 				console.err("There is a problem:", data);
- 	 			}
+ 		}).on('disconnect', function() {
 
- 	 		}).on('disconnect', function() {
+ 			$(textarea).append('ChatSocket-> Disconnected');
 
- 	 			$(textarea).append('ChatSocket-> Disconnected');
-
- 	 		});
- 	 	});
+ 		});
  	 };
 
 	/**
@@ -53,7 +49,7 @@
  	 	$(outgoingtext).keypress(function(event) {
  	 		if(event.which == 13) {
  	 			event.preventDefault();
- 	 			ChatOpenRPG.OpenRPG.socket.emit('send', { message: $(outgoingtext).val() });
+ 	 			ChatOpenRPG.OpenRPG.socket.emit('send', { message: ChatOpenRPG.OpenRPG.user.name+": "+$(outgoingtext).val() });
  	 			$(outgoingtext).val('');
  	 		}
  	 	});
