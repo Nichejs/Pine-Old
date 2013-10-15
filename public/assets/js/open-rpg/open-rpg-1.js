@@ -12,8 +12,7 @@
 
  define(["open-rpg/map_creation-open-rpg","open-rpg/chat-open-rpg" , "open-rpg/character-open-rpg", "socket"],
  	function(MapOpenRPG,ChatOpenRPG, CharacterOpenRPG, io){
-		console.log('Loaded OpenRPG');
- 		var OpenRPG = {
+		var OpenRPG = {
  			character : null,
  			map : null,
  			size : null,
@@ -94,8 +93,12 @@
 		 * Create a new connection 
 		 */
 		OpenRPG.socketStart = function(user, pass){
-			console.log(io);
+			console.log("Opening socket connection");
+			console.time('Socket connected');
 			OpenRPG.socket = io.connect(OpenRPG.socketHost, { query: "user="+user+"&pass="+pass });
+			OpenRPG.socket.on('connect', function () {
+				console.timeEnd("Socket connected");
+			});
 			
 			// Supongo que funciono
 			OpenRPG.user.name = user;
@@ -103,7 +106,6 @@
 			OpenRPG.socket.on('error', function (err) {
 				alert("Error de conextion: "+err);
 			});
-			console.log("Socket connected");
 		};
 		
 		/**
@@ -121,8 +123,6 @@
 		 	MapOpenRPG.drawBaseSheet(OpenRPG.canvas.canvasElement, OpenRPG.canvas.size);
 		 };
 	
-		 
-		console.log("Devuelvo OpenRPG");
 		return OpenRPG;
 });
 
