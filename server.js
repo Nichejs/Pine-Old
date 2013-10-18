@@ -144,11 +144,20 @@ io.set('authorization', function (data, accept) {
 io.sockets.on('connection', function (socket) {
 	users++;
 	console.log(users+' users online.');
-    socket.emit('message', { message: 'ChatServer -> Welcome' });
-    socket.on('send', function (data) {
-    	console.log("ChatServer -> Received");
-        io.sockets.emit('message', data);
-    });
+	socket.on('chatEmit', function (data) {
+		console.log("ChatServer -> Received");
+		io.sockets.emit('chatMessage', data);
+	});
 }).on('disconnect', function(){
 	users--;
-});
+})/*.on('subscribe', function(data){
+	socket.join(data.room);
+}).on('unsubscribe', function(data){
+	socket.leave(data.room);
+})*/;
+
+// Socket intervals
+var usersOnlineInterval = setInterval(function(){
+	//io.sockets.broadcast.to('usersOnline').emit('function', {count:users});
+	io.sockets.in('usersOnline').emit('message', {count:users});
+},500);

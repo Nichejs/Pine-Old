@@ -42,7 +42,7 @@
 </style>
 </head>
 <body>
-	<h1>Open RPG</h1>
+	<h1>Pine</h1>
 	<div id="container"></div>
 	<p align="center">
 		<small><a href="https://github.com/Open-RPG/open-rpg">Fork on Github</a></small>
@@ -51,10 +51,15 @@
 	<script type="text/javascript">
 	require.config({
 	    paths: {
-	    	socket: "socket.io",
-	        jquery: "jquery-2.0.3.min",
-	        open_rpg: "assets/js/open-rpg/open-rpg-1",
-	        sheetengine: "sheetengine-src-1.2.0"
+	    	'socket': "socket.io",
+	        'jquery': "jquery-2.0.3.min",
+	        'open_rpg': "assets/js/open-rpg/open-rpg-1",
+	        'sheetengine': "sheetengine-src-1.2.0"
+	    },
+	    shim: {
+	    	'sheetengine': {
+				'exports': 'sheetengine'
+			},
 	    }
 	});
 	require(["open_rpg"],function(OpenRPG){

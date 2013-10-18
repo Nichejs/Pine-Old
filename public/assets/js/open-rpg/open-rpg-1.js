@@ -45,10 +45,12 @@
 		 * Launches Game, it requires the user to be logged in. 
 		 */
 		OpenRPG.start = function(user, pass){
-			$(container).html('<canvas id="game" width="900" height="500"></canvas><textarea id="chatOut" rows="20" cols="50"></textarea><input type="text" id="chatIn" placeholder="Chat...">');
+			$(container).html('<canvas id="game" width="900" height="500"></canvas><div id="chatOut" style="overflow:hidden; width:150px; height:200px"></div><input type="text" id="chatIn" placeholder="Chat...">');
 		 	
 		 	// Canvas reference
 			OpenRPG.canvas.canvasElement=$("#game").get(0);
+			OpenRPG.canvas.canvasElement.height = OpenRPG.size.h;
+			OpenRPG.canvas.canvasElement.width = OpenRPG.size.w;
 			OpenRPG.canvas.size=OpenRPG.size;
 	
 			console.log("OpenRPG started");
@@ -104,7 +106,7 @@
 			OpenRPG.user.name = user;
 			
 			OpenRPG.socket.on('error', function (err) {
-				alert("Error de conextion: "+err);
+				console.error("Error de conextion: ",err);
 			});
 		};
 		

@@ -23,15 +23,17 @@
  	 ChatOpenRPG.incoming = function(textarea){
  	 	
  	 	ChatOpenRPG.OpenRPG.socket.on('connect', function () {
+ 	 		
  	 		$(textarea).append('ChatSocket-> Connected');
- 	 	}).on('message', function(data) {
+ 	 		
+ 	 	}).on('chatMessage', function(data) {
 
  			if(data.message) {
- 				$(textarea).append("\n"+data.message);
+ 				$(textarea).append("<br />"+data.message);
+ 				$(textarea).scrollTop($(textarea)[0].scrollHeight);
  			} else {
- 				console.err("There is a problem:", data);
+ 				console.error("Socket->No message:", data);
  			}
-
  		}).on('disconnect', function() {
 
  			$(textarea).append('ChatSocket-> Disconnected');
@@ -49,7 +51,7 @@
  	 	$(outgoingtext).keypress(function(event) {
  	 		if(event.which == 13) {
  	 			event.preventDefault();
- 	 			ChatOpenRPG.OpenRPG.socket.emit('send', { message: ChatOpenRPG.OpenRPG.user.name+": "+$(outgoingtext).val() });
+ 	 			ChatOpenRPG.OpenRPG.socket.emit('chatEmit', { message: ChatOpenRPG.OpenRPG.user.name+": "+$(outgoingtext).val() });
  	 			$(outgoingtext).val('');
  	 		}
  	 	});
