@@ -113,6 +113,8 @@ app.get('/api/db', function (req, res) {
 
 // SocketIO
 
+io.set('log level', 2); // 0 error, 1 warnings, 2 info, 3 for debug
+
 // Client authorisation
 io.set('authorization', function (data, accept) {
 	console.log("Data: ",data.query);
@@ -140,24 +142,40 @@ io.set('authorization', function (data, accept) {
 	});
 });
 
-// Chat
-io.sockets.on('connection', function (socket) {
-	users++;
-	console.log(users+' users online.');
-	socket.on('chatEmit', function (data) {
-		console.log("ChatServer -> Received");
-		io.sockets.emit('chatMessage', data);
-	});
-}).on('disconnect', function(){
-	users--;
-})/*.on('subscribe', function(data){
-	socket.join(data.room);
-}).on('unsubscribe', function(data){
-	socket.leave(data.room);
-})*/;
+// ----------------------------------
+// CHAT
 
-// Socket intervals
-var usersOnlineInterval = setInterval(function(){
-	//io.sockets.broadcast.to('usersOnline').emit('function', {count:users});
-	io.sockets.in('usersOnline').emit('message', {count:users});
-},500);
+io.sockets.on('connection', function(socket){
+	
+	users++;
+	console.log("Connected user. Online: "+users);
+	
+	socket.on('subscribe', function(room) { 
+	    console.log('joining room', room);
+	    socket.join(room); 
+	});
+	
+	socket.on('unsubscribe', function(room) {  
+	    console.log('leaving room', room);
+	    socket.leave(room); 
+	});
+	
+	socket.on('send', function(data) {
+	    console.log('sending message');
+	    io.sockets.in(data.room).emit('message', data);
+	});
+	
+	socket.on('disconnect', function(){
+		users--;
+		console.log("Disconnected user. Online: "+users);
+	});
+	
+	// Socket intervals
+	var usersOnlineInterval = setInterval(function(){
+		io.sockets.in('server').emit('usersOnline', {count:users});
+	},1000);
+
+	
+});
+
+

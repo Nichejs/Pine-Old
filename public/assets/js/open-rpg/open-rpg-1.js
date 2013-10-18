@@ -45,7 +45,7 @@
 		 * Launches Game, it requires the user to be logged in. 
 		 */
 		OpenRPG.start = function(user, pass){
-			$(container).html('<canvas id="game" width="900" height="500"></canvas><div id="chatOut" style="overflow:hidden; width:150px; height:200px"></div><input type="text" id="chatIn" placeholder="Chat...">');
+			$(container).html('<canvas id="game" width="900" height="500"></canvas><div id="chatOut"></div><input type="text" id="chatIn" placeholder="Chat..."><div id="usersOnline"></div>');
 		 	
 		 	// Canvas reference
 			OpenRPG.canvas.canvasElement=$("#game").get(0);
@@ -104,6 +104,16 @@
 			
 			// Supongo que funciono
 			OpenRPG.user.name = user;
+			
+			// Notificaciones del servidor
+			OpenRPG.socket.emit('subscribe', 'server');
+			
+			// Recibir los mensajes del servidor
+			OpenRPG.socket.on('usersOnline', function (data) {
+ 	 			if(data.count){
+ 	 				$('#usersOnline').text(data.count+' online');
+ 	 			}
+			});
 			
 			OpenRPG.socket.on('error', function (err) {
 				console.error("Error de conextion: ",err);

@@ -7,13 +7,15 @@
  */
 
  define(["jquery"],function($){
-	
-	var ChatOpenRPG = {
-		OpenRPG : null
-	};
+ 	
+ 	var ChatOpenRPG = {},
+ 		OpenRPG;
 	
 	ChatOpenRPG.init = function(OpenR){
-		ChatOpenRPG.OpenRPG = OpenR;
+		OpenRPG = OpenR;
+		
+		// Connect to chat room
+		OpenRPG.socket.emit('subscribe', 'chat');
 	};
 	
 	/**
@@ -22,23 +24,16 @@
  	 */
  	 ChatOpenRPG.incoming = function(textarea){
  	 	
- 	 	ChatOpenRPG.OpenRPG.socket.on('connect', function () {
- 	 		
- 	 		$(textarea).append('ChatSocket-> Connected');
- 	 		
- 	 	}).on('chatMessage', function(data) {
-
- 			if(data.message) {
- 				$(textarea).append("<br />"+data.message);
- 				$(textarea).scrollTop($(textarea)[0].scrollHeight);
- 			} else {
- 				console.error("Socket->No message:", data);
- 			}
- 		}).on('disconnect', function() {
-
- 			$(textarea).append('ChatSocket-> Disconnected');
-
- 		});
+ 	 	OpenRPG.socket.on('message', function (data) {
+ 	 		if(data.room = 'chat'){
+ 	 			if(data.message) {
+	 				$(textarea).append(data.message+"<br />");
+	 				$(textarea).scrollTop($(textarea)[0].scrollHeight);
+	 			} else {
+	 				console.error("Socket->No message:", data);
+	 			}
+ 	 		}
+		});
  	 };
 
 	/**
@@ -51,7 +46,7 @@
  	 	$(outgoingtext).keypress(function(event) {
  	 		if(event.which == 13) {
  	 			event.preventDefault();
- 	 			ChatOpenRPG.OpenRPG.socket.emit('chatEmit', { message: ChatOpenRPG.OpenRPG.user.name+": "+$(outgoingtext).val() });
+ 	 			OpenRPG.socket.emit('send', { room: 'chat', message: OpenRPG.user.name+": "+$(outgoingtext).val() });
  	 			$(outgoingtext).val('');
  	 		}
  	 	});
