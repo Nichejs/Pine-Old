@@ -80,7 +80,7 @@
 		 * Displays a login box and handles its events. 
 		 */
 		OpenRPG.displayLogin = function(){
-			$(OpenRPG.container).append('<h2>Login to OpenRPG</h2><form action="/" method="post" id="loginForm">Usuario: <input type="text" name="user" id="username" /> Contraseña: <input type="password" name="pass" id="pass" /> <input type="submit" value="Login" /></form>');
+			$(OpenRPG.container).append('<h2>Login to OpenRPG</h2><form action="/" method="post" id="loginForm">Usuario: <input type="text" name="user" id="username" /> Contraseña: <input type="password" name="pass" id="pass" /> <input type="submit" value="Login" /><p>Not a user? <a href="/register.html">Register!</a></p></form>');
 			$('#loginForm').submit(function(event){
 				event.preventDefault();
 				
@@ -116,6 +116,7 @@
 			});
 			
 			OpenRPG.socket.on('error', function (err) {
+				window.location = '/';
 				console.error("Error de conextion: ",err);
 			});
 		};

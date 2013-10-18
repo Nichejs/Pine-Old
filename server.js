@@ -47,7 +47,9 @@ app.post('/api/db', function (req, res) {
     
     //TODO Improve this section
     switch(req.body.type){
-    	case 'login':
+    	// I leave the login function here just in case
+    	// but at the moment it's not necessary. Login is handled by the socket.
+    	/*case 'login':
     		// Check if user exists
     		var users = nano.use('users');
     		// Sha1 password
@@ -65,7 +67,7 @@ app.post('/api/db', function (req, res) {
 	    			res.end();	
     			}
     		});
-    		break;
+    		break;*/
     	case 'register':
     		var data = req.body.user,
     			users = nano.use('users');
@@ -73,42 +75,23 @@ app.post('/api/db', function (req, res) {
     		var sha1 = crypto.createHash('sha1');
 		    sha1.update(data.pass);
 		    // Insert in database
-		    //users.insert(data.name, {name: data.name, pass: sha1.digest('hex')});
-		    console.log("Intentando insertar");
-		    users.insert({name: data.name, pass: sha1.digest('hex')}, function(err, body) {
+			users.insert({_id: data.name, pass: sha1.digest('hex')}, function(err, body) {
 				if (err){
-					res.send("No se pudo completar el registro");
-					console.err(err);
+					if(err.status_code == 409){
+						res.send("El usuario ya existe!!");
+					}else{
+						res.send("Ha ocurrido un error extraño con el servidor, intentalo mas tarde");
+					}
+					//res.end();
+				}else{
+					res.redirect('/');
 				}
-				console.log('done');
-				res.send("Usuario registrado, bienvenido "+data.name+"!");
-				res.end();
 			});
 		    
     		break;
 		default:
 			res.send(JSON.stringify('Unsupported'));
-			res.end();
     }
-});
-
-// GET handle for the API
-app.get('/api/db', function (req, res) {
-	
-	// Users handle
-    var users = nano.use('users');
-    var response = '';
-    users.view('userList', 'userList', function(err, body) {
-	  if (!err) {
-	    body.rows.forEach(function(doc) {
-	      response += "\n"+doc.value;
-	      console.log(doc.value);
-	    });
-	    res.send(response);
-		console.log("Response: ",response);
-		res.end();
-	  }
-	});
 });
 
 // SocketIO
@@ -117,7 +100,6 @@ io.set('log level', 2); // 0 error, 1 warnings, 2 info, 3 for debug
 
 // Client authorisation
 io.set('authorization', function (data, accept) {
-	console.log("Data: ",data.query);
 	// Now use data.query to handle login
 	// Check if user exists
 	var users = nano.use('users');
@@ -125,15 +107,14 @@ io.set('authorization', function (data, accept) {
 	var sha1 = crypto.createHash('sha1');
 	sha1.update(data.query.pass);
 	
-	users.view('users','name-pass', {key: [data.query.user, sha1.digest('hex')]}, function (error, view) {
+	users.view('lists','user-pass', {key: [data.query.user, sha1.digest('hex')]}, function (error, view) {
 		if(error !== null){
-			console.log(error);
+			console.error(error);
 			accept(null,false);
 		}else{
-			console.log(view);
 			if(view.rows.length > 0){
 				data.sessionID = view.rows[0].id;
-				console.log("Login ok, user id = "+view.rows[0].id);
+				console.log("Login ok, User="+view.rows[0].id);
 				accept(null, true);
 			}else{
 				accept(null,false);
@@ -148,26 +129,21 @@ io.set('authorization', function (data, accept) {
 io.sockets.on('connection', function(socket){
 	
 	users++;
-	console.log("Connected user. Online: "+users);
 	
 	socket.on('subscribe', function(room) { 
-	    console.log('joining room', room);
 	    socket.join(room); 
 	});
 	
 	socket.on('unsubscribe', function(room) {  
-	    console.log('leaving room', room);
 	    socket.leave(room); 
 	});
 	
 	socket.on('send', function(data) {
-	    console.log('sending message');
 	    io.sockets.in(data.room).emit('message', data);
 	});
 	
 	socket.on('disconnect', function(){
 		users--;
-		console.log("Disconnected user. Online: "+users);
 	});
 	
 	// Socket intervals

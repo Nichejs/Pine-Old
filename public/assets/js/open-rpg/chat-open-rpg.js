@@ -24,6 +24,8 @@
  	 */
  	 ChatOpenRPG.incoming = function(textarea){
  	 	
+ 	 	$(textarea).append("Conectado!<br />");
+ 	 	
  	 	OpenRPG.socket.on('message', function (data) {
  	 		if(data.room = 'chat'){
  	 			if(data.message) {
