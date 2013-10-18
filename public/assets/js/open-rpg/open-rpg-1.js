@@ -80,7 +80,7 @@
 		 * Displays a login box and handles its events. 
 		 */
 		OpenRPG.displayLogin = function(){
-			$(OpenRPG.container).append('<h2>Login to OpenRPG</h2><form action="/" method="post" id="loginForm">Usuario: <input type="text" name="user" id="username" /> Contraseña: <input type="password" name="pass" id="pass" /> <br /><input type="submit" value="Login" /></form>');
+			$(OpenRPG.container).append('<h2>Login to OpenRPG</h2><form action="/" method="post" id="loginForm">Usuario: <input type="text" name="user" id="username" /> Contraseña: <input type="password" name="pass" id="pass" /> <input type="submit" value="Login" /></form>');
 			$('#loginForm').submit(function(event){
 				event.preventDefault();
 				
