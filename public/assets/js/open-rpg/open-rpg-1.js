@@ -6,40 +6,136 @@
  * License: GNU GENERAL PUBLIC LICENSE
  */
 
-var OpenRPG = (function() {
-	var OpenRPG = {
-		character : null,
-		map : null,
-		coords : {x:0,y:0},
-		socketHost : 'http://c.uplei.com:9002',
-		socket : null,
-		debug : false
-	};
+ requirejs.config({
+ 	baseUrl: 'assets/js'
+ });
+
+ define(["open-rpg/map_creation-open-rpg","open-rpg/chat-open-rpg" , "open-rpg/character-open-rpg", "socket"],
+ 	function(MapOpenRPG,ChatOpenRPG, CharacterOpenRPG, io){
+		var OpenRPG = {
+ 			character : null,
+ 			map : null,
+ 			size : null,
+ 			container : null,
+ 			coords : {x:0,y:0},
+ 			socketHost : 'http://c.uplei.com:9002',
+ 			socket : null,
+ 			debug : false,
+ 			canvas : {canvasElement:null,size:null},
+ 			user : {
+ 				id : null,
+ 				name : null
+ 			}
+ 		};
+
+		/**
+		 * Start OpenRPG 
+		 */
+		 OpenRPG.init = function(gameContainer, size){
+			OpenRPG.container = gameContainer;
+			OpenRPG.size = size;
+			if(!OpenRPG.logged()){
+				OpenRPG.displayLogin();
+			}else{
+				OpenRPG.start('','');
+			}
+		};
+		
+		/**
+		 * Launches Game, it requires the user to be logged in. 
+		 */
+		OpenRPG.start = function(user, pass){
+			$(container).html('<canvas id="game" width="900" height="500"></canvas><div id="chatOut"></div><input type="text" id="chatIn" placeholder="Chat..."><div id="usersOnline"></div>');
+		 	
+		 	// Canvas reference
+			OpenRPG.canvas.canvasElement=$("#game").get(0);
+			OpenRPG.canvas.canvasElement.height = OpenRPG.size.h;
+			OpenRPG.canvas.canvasElement.width = OpenRPG.size.w;
+			OpenRPG.canvas.size=OpenRPG.size;
 	
-	/**
-	 * Start OpenRPG 
-	 */
-	OpenRPG.init = function(canvasElement, size){
-		console.log("OpenRPG started");
-		// Start socket
-		OpenRPG.socketStart();
-		console.log("Socket connected");
-	};
+			console.log("OpenRPG started");
+			
+			// Start socket
+			OpenRPG.socketStart(user, pass);
+			ChatOpenRPG.init(OpenRPG);
+			
+			// Launch Chat
+			OpenRPG.chat($('#chatIn').get(0), $('#chatOut').get(0));
+			
+			// Initialize map
+			OpenRPG.map();
+		};
+		
+		/**
+		 * Check if current user is logged in
+		 * @return boolean 
+		 */
+		OpenRPG.logged = function(){
+			if(OpenRPG.user.id !== null && OpenRPG.user.id > 0) return true;
+			return false;
+		};
+		
+		
+		/**
+		 * Displays a login box and handles its events. 
+		 */
+		OpenRPG.displayLogin = function(){
+			$(OpenRPG.container).append('<h2>Login to OpenRPG</h2><form action="/" method="post" id="loginForm">Usuario: <input type="text" name="user" id="username" /> Contraseña: <input type="password" name="pass" id="pass" /> <input type="submit" value="Login" /><p>Not a user? <a href="/register.html">Register!</a></p></form>');
+			$('#loginForm').submit(function(event){
+				event.preventDefault();
+				
+				// Init OpenRPG
+				//TODO Validate user&pass before making the form disappear...
+				OpenRPG.start($('#username').val(), $('#pass').val());
+			});
+		};
+		
+		
+		/**
+		 * Create a new connection 
+		 */
+		OpenRPG.socketStart = function(user, pass){
+			console.log("Opening socket connection");
+			console.time('Socket connected');
+			OpenRPG.socket = io.connect(OpenRPG.socketHost, { query: "user="+user+"&pass="+pass });
+			OpenRPG.socket.on('connect', function () {
+				console.timeEnd("Socket connected");
+			});
+			
+			// Supongo que funciono
+			OpenRPG.user.name = user;
+			
+			// Notificaciones del servidor
+			OpenRPG.socket.emit('subscribe', 'server');
+			
+			// Recibir los mensajes del servidor
+			OpenRPG.socket.on('usersOnline', function (data) {
+ 	 			if(data.count){
+ 	 				$('#usersOnline').text(data.count+' online');
+ 	 			}
+			});
+			
+			OpenRPG.socket.on('error', function (err) {
+				window.location = '/';
+				console.error("Error de conextion: ",err);
+			});
+		};
+		
+		/**
+		 * Sets up the game Chat 
+		 * @param {Object} input
+		 * @param {Object} output
+		 * @requires ChatOpenRPG
+		 */
+		 OpenRPG.chat = function(input, output){
+		 	ChatOpenRPG.incoming(output);
+		 	ChatOpenRPG.outgoing(input);
+		 };
 	
-	OpenRPG.socketStart = function(){
-		OpenRPG.socket = io.connect(OpenRPG.socketHost);
-	};
+		 OpenRPG.map = function(){
+		 	MapOpenRPG.drawBaseSheet(OpenRPG.canvas.canvasElement, OpenRPG.canvas.size);
+		 };
 	
-	/**
-	 * Sets up the game Chat 
-	 * @param {Object} input
-	 * @param {Object} output
-	 * @requires ChatOpenRPG
-	 */
-	OpenRPG.chat = function(input, output){
-		ChatOpenRPG.incoming(output);
-		ChatOpenRPG.outgoing(input);
-	};
-	
-	return OpenRPG;
-})();
+		return OpenRPG;
+});
+

@@ -6,50 +6,53 @@
  * License: GNU GENERAL PUBLIC LICENSE
  */
 
-var ChatOpenRPG = (function() {
+ define(["jquery"],function($){
+ 	
+ 	var ChatOpenRPG = {},
+ 		OpenRPG;
 	
-	var ChatOpenRPG = {
-		// Config options
+	ChatOpenRPG.init = function(OpenR){
+		OpenRPG = OpenR;
+		
+		// Connect to chat room
+		OpenRPG.socket.emit('subscribe', 'chat');
 	};
 	
 	/**
 	 * Receive new messages from the server and show them on-screen
  	 * @param {Object} textarea
-	 */
-	ChatOpenRPG.incoming = function(textarea){
-		OpenRPG.socket.on('connect', function () {
-	    	$(textarea).append('ChatSocket-> Connected');
-	    	
-	    	OpenRPG.socket.on('message', function(data) {
-	    		
-	    		if(data.message) {
-		            $(textarea).append("\nClient-> "+data.message);
-		        } else {
-		            console.err("There is a problem:", data);
-		        }
-	        	
-	   		}).on('disconnect', function() {
-	   			
-	        	$(textarea).append('ChatSocket-> Disconnected');
-	        	
-	    	});
-        });
-	};
-	
+ 	 */
+ 	 ChatOpenRPG.incoming = function(textarea){
+ 	 	
+ 	 	$(textarea).append("Conectado!<br />");
+ 	 	
+ 	 	OpenRPG.socket.on('message', function (data) {
+ 	 		if(data.room = 'chat'){
+ 	 			if(data.message) {
+	 				$(textarea).append(data.message+"<br />");
+	 				$(textarea).scrollTop($(textarea)[0].scrollHeight);
+	 			} else {
+	 				console.error("Socket->No message:", data);
+	 			}
+ 	 		}
+		});
+ 	 };
+
 	/**
 	 * Get new messages from the user and send them to the server
 	 * They are then broadcasted from the server to the other clients.
  	 * @param {Object} outgoingtext
-	 */
-	ChatOpenRPG.outgoing = function(outgoingtext){
-		$(outgoingtext).keypress(function(event) {
-			if(event.which == 13) {
-               	event.preventDefault();
-               	OpenRPG.socket.emit('send', { message: $(outgoingtext).val() });
-            	$(outgoingtext).val('');
-            }
-        });
-	};
-	
-	return ChatOpenRPG;
-})();
+ 	 */
+ 	 ChatOpenRPG.outgoing = function(outgoingtext){
+ 	 	
+ 	 	$(outgoingtext).keypress(function(event) {
+ 	 		if(event.which == 13) {
+ 	 			event.preventDefault();
+ 	 			OpenRPG.socket.emit('send', { room: 'chat', message: OpenRPG.user.name+": "+$(outgoingtext).val() });
+ 	 			$(outgoingtext).val('');
+ 	 		}
+ 	 	});
+ 	 };
+
+ 	 return ChatOpenRPG;
+ });

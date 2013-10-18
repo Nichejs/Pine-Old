@@ -8,6 +8,13 @@
 		background:#efefef;
 		font-family:"Gill Sans MT";
 	}
+	a, a:visited{
+		text-decoration:none;
+		color:#1C7EFF;
+	}
+	a:hover{
+		text-decoration:underline;
+	}
 	h1{
 		text-align:center;
 	}
@@ -34,49 +41,74 @@
 		outline:none;
 		position:absolute;
 		top:5px;
-		left:5px;
+		left:0px;
+		overflow:hidden;
+		width:250px;
+		height:400px
 	}
 	input{
 		padding:3px;
 	}
+	h2{
+		padding:5px 20px;
+		margin-bottom:0;
+		border-bottom:1px solid #ccc;
+	}
+	form{
+		background:white;
+		padding:20px;
+	}
+	input[type=text], input[type=password]{
+		background:white;
+		border-radius:3px;
+		border:#999999 solid 1px;
+	}
+	input[type=submit]{
+		background:white;
+		padding:3px 6px;
+		border:1px solid #999999;
+		border-radius:7px;
+		color:#1C7EFF;
+		cursor:pointer;
+	}
+	input[type=submit]:hover{
+		background:#1C7EFF;
+		color:white;
+		border-color:#1C7EFF;
+	}
+	#usersOnline{
+		position:absolute;
+		top:0;
+		right:4px;
+	}
 </style>
 </head>
 <body>
-	<h1>Open RPG</h1>
-	<div id="container">
-		<canvas id="game" width="900" height="500"></canvas>
-		<!-- Overlay for night mode -->
-		<!--
-			<div style="background:rgba(0,0,40,0.2); z-index:999; position:absolute; top:0px; left:0px; width:900px; height:500px;"></div>
-		<!-- -->
-		<textarea id="chatOut" rows="20" cols="50"></textarea>
-		<input type="text" id="chatIn" placeholder="Chat...">
-	</div>
+	<h1>Pine</h1>
+	<div id="container"></div>
 	<p align="center">
 		<small><a href="https://github.com/Open-RPG/open-rpg">Fork on Github</a></small>
 	</p>
 	<script src="/assets/js/require_2_1_8.js"></script>
 	<script type="text/javascript">
 	require.config({
-    paths: {
-    	socket: "/socket.io/socket.io",
-        jquery: "jquery-2.0.3.min",
-        open_rpg: "assets/js/open-rpg/open-rpg-1",
-        sheetengine: "sheetengine-src-1.2.0"
-    }
-});
+	    paths: {
+	    	'socket': "socket.io",
+	        'jquery': "jquery-2.0.3.min",
+	        'open_rpg': "assets/js/open-rpg/open-rpg-1",
+	        'sheetengine': "sheetengine-src-1.2.0"
+	    },
+	    shim: {
+	    	'sheetengine': {
+				'exports': 'sheetengine'
+			},
+	    }
+	});
 	require(["open_rpg"],function(OpenRPG){
-		var canvasElement = document.getElementById('game');
-		var chatIn = document.getElementById('chatIn');
-		var chatOut = document.getElementById('chatOut');
+		var game = document.getElementById('container');
 
 		// Launch
-		OpenRPG.init(canvasElement, {w:900,h:500});
-		//chat.log("pase OpenRPG");
-		// Muevo Chat a OpenRPG
-		//OpenRPG.chat(chatIn, chatOut);
-
-		OpenRPG.map();
+		OpenRPG.init(game, {w:900,h:500});
 	});
 	</script>
 </body>

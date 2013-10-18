@@ -3,19 +3,74 @@
 <title>Register at Open RPG</title>
 <style type="text/css">
 	body{
-		margin:0;
+		margin:20px;
 		padding: 0;
+		background:#efefef;
+		font-family:"Gill Sans MT";
 	}
+	a, a:visited{
+		text-decoration:none;
+		color:#1C7EFF;
+	}
+	a:hover{
+		text-decoration:underline;
+	}
+	h1{
+		text-align:center;
+	}
+	#container{
+		position:relative;
+		width:900px;
+		margin:0 auto;
+		background:#f2f2f2;
+		box-shadow:#999 0 0 10px;
+	}
+	input{
+		padding:3px;
+	}
+	h2{
+		padding:5px 20px;
+		margin-bottom:0;
+		border-bottom:1px solid #ccc;
+	}
+	form{
+		background:white;
+		padding:20px;
+	}
+	input[type=text], input[type=password]{
+		background:white;
+		border-radius:3px;
+		border:#999999 solid 1px;
+	}
+	input[type=submit]{
+		background:white;
+		padding:3px 6px;
+		border:1px solid #999999;
+		border-radius:7px;
+		color:#1C7EFF;
+		cursor:pointer;
+	}
+	input[type=submit]:hover{
+		background:#1C7EFF;
+		color:white;
+		border-color:#1C7EFF;
+	}
+</style>
 </style>
 </head>
 <body>
-	<h1>Open RPG</h1>
-	<h2>Registration:</h2>
-	<form action="/api/post" method="post">
-		Username: <input type="text" name="user[name]" />
-		Password: <input type="password" name="user[pass]" />
-		<br />
-		<input type="submit" value="Register" />
-	</form>
+	<h1>Pine</h1>
+	<div id="container">
+		<h2>Register:</h2>
+		<form action="/api/db" method="post">
+			<input type="hidden" name="type" value="register" />
+			Username: <input type="text" name="user[name]" />
+			Password: <input type="password" name="user[pass]" />
+			<input type="submit" value="Register" />
+		</form>
+	</div>
+	<p align="center">
+		<small><a href="/">Back</a> &bull; <a href="https://github.com/Open-RPG/open-rpg">Fork on Github</a></small>
+	</p>
 </body>
 </html>
