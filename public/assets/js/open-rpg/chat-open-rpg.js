@@ -33,7 +33,7 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
 		// Assign letter t to chat
 		$(document).keypress(function(event) {
 			if($('#chatIn').is(":focus")) return;
-			if(event.which == 116) { // t
+			if(event.which == 116 || event.which == 13) { // t && enter
  	 			event.preventDefault();
  	 			$(ChatOpenRPG.input).focus();
  	 		}
@@ -94,6 +94,7 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
  	 	$(ChatOpenRPG.input).keypress(function(event) {
  	 		if(event.which == 13) {
  	 			event.preventDefault();
+ 	 			event.stopPropagation();
  	 			OpenRPG.socket.emit('send', { room: 'chat', message: $(ChatOpenRPG.input).val() });
  	 			$(ChatOpenRPG.input).val('').blur();
  	 			$(OpenRPG.canvas.canvasElement).focus();

@@ -118,7 +118,10 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		
 		function setKeys(event, val) {
 			// If chat has focus, stop this
-			if($('#chatIn').is(":focus")) return;
+			if($('#chatIn').is(":focus")){
+				keys = {u:0,d:0,l:0,r:0};
+				return;
+			};
 			
 			var keyProcessed = 0;
 			      
@@ -182,7 +185,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 			var targetp = targetInfo.targetp;
 			var stopFall = targetInfo.stopFall;
 			
-			// if character stops falling, reset jump info
+			// If character stops falling, reset jump info
 			if (stopFall) {
 				jumpspeed = 0;
 				jump = 0;
