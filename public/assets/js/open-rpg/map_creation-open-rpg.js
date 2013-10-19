@@ -1,24 +1,22 @@
 /**
- * Chat-Open-RPG
- * Chat System for OpenRPG
+ * Drawing the Map
+ * 
  * https://github.com/Open-RPG/open-rpg
  * 
  * License: GNU GENERAL PUBLIC LICENSE
  */
 
-define(["open-rpg/tree-model-open-rpg","sheetengine"],function(Tree,sheetengine){
+define(["tree","sheetengine"],function(Tree,sheetengine){
 
 		var MapOpenRPG = {
 			// Config options
 		};
-	
-		
 
 		/**
 		 * Draw a simply BaseSheet into the canvas area 
 		 * given by parameter
-	 	 * @param {Object} canvasElement
-		 * @param {dimensions of the canvas element} size
+	 	 * @param {Object} Reference to the canvas element
+		 * @param {Object} Domensions of the canvas element {w,h}
 		 */
 		MapOpenRPG.drawBaseSheet = function(canvasElement, size){
 			sheetengine.scene.init(canvasElement, size);
@@ -33,13 +31,12 @@ define(["open-rpg/tree-model-open-rpg","sheetengine"],function(Tree,sheetengine)
 			}
 			Tree.init(-150,-120,40,size);
 			Tree.drawPineTexture();
-
+			
+			sheetengine.calc.calculateChangedSheets();
+			sheetengine.drawing.drawScene(true);
 		};
 		
-		
 		return MapOpenRPG;
-
-
 });
 
 

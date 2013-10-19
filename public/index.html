@@ -92,10 +92,16 @@
 	<script src="/assets/js/require_2_1_8.js"></script>
 	<script type="text/javascript">
 	require.config({
+		baseUrl: 'assets/js/',
 	    paths: {
+	    	'app' : 'app',
 	    	'socket': "socket.io",
 	        'jquery': "jquery-2.0.3.min",
-	        'open_rpg': "assets/js/open-rpg/open-rpg-1",
+	        'open_rpg': "open-rpg/open-rpg-1",
+	        'chat' : 'open-rpg/chat-open-rpg',
+	        'map' : 'open-rpg/map_creation-open-rpg',
+	        'tree' : 'open-rpg/tree-model-open-rpg',
+	        'character' : 'open-rpg/character-open-rpg',
 	        'sheetengine': "sheetengine-src-1.2.0"
 	    },
 	    shim: {
@@ -104,11 +110,11 @@
 			},
 	    }
 	});
-	require(["open_rpg"],function(OpenRPG){
+	require(["app"],function(App){
 		var game = document.getElementById('container');
 
 		// Launch
-		OpenRPG.init(game, {w:900,h:500});
+		App.init(game, {w:900,h:500});
 	});
 	</script>
 </body>

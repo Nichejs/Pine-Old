@@ -1,10 +1,6 @@
+define(["sheetengine"],function(sheetengine){ //Module name
 
-requirejs.config({
-		baseUrl: 'assets/js/'
-	});
-	define(["sheetengine"],function(sheetengine){ //Module name
-
-		function defineCharacter(centerp) {
+	function defineCharacter(centerp) {
         // character definition for animation with sheet motion
         var body = new sheetengine.Sheet({x:0,y:0,z:15}, {alphaD:0,betaD:0,gammaD:0}, {w:11,h:14});
         var backhead = new sheetengine.Sheet({x:0,y:-1,z:19}, {alphaD:0,betaD:0,gammaD:0}, {w:8,h:6});
@@ -48,13 +44,14 @@ requirejs.config({
       };
 
 
-var character = {
-};
-character.init = function(){
-	defineCharacter({x:110,y:0,z:0});
-       sheetengine.scene.setCenter({x:character.centerp.x, y:character.centerp.y, z:0});
-};
-	
-return character;
+	var character = {
+		
+	};
+	character.init = function(){
+		defineCharacter({x:110,y:0,z:0});
+	       sheetengine.scene.setCenter({x:character.centerp.x, y:character.centerp.y, z:0});
+	};
+		
+	return character;
 });
 

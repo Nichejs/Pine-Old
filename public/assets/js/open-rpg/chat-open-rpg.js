@@ -6,16 +6,16 @@
  * License: GNU GENERAL PUBLIC LICENSE
  */
 
- define(["jquery"],function($){
+define(["jquery", "open_rpg"],function($, OpenRPG){
  	
- 	var ChatOpenRPG = {},
- 		OpenRPG;
+ 	var ChatOpenRPG = {};
 	
-	ChatOpenRPG.init = function(OpenR){
-		OpenRPG = OpenR;
-		
+	ChatOpenRPG.init = function(incoming, outgoing){
 		// Connect to chat room
 		OpenRPG.socket.emit('subscribe', 'chat');
+		
+		ChatOpenRPG.incoming(incoming);
+		ChatOpenRPG.outgoing(outgoing);
 	};
 	
 	/**
