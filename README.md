@@ -1,5 +1,4 @@
-Pine Game
-========
+![Pine Game](public/assets/img/logo.png "Pine, the game")
 
 Pine is (going to be) a massive online game, built on HTML5 canvas, JavaScript, Node.JS, Socket.io...
 
