@@ -111,6 +111,10 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		var jump = 0;
 		
 		function setKeys(event, val) {
+			// If chat has focus, stop this
+			if($('#chatIn').is(":focus"))
+				return;
+			
 			var keyProcessed = 0;
 			      
 			if (event.keyCode == '38' || event.keyCode == '87') {
