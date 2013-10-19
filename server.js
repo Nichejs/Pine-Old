@@ -126,6 +126,8 @@ io.set('authorization', function (data, accept) {
 // ----------------------------------
 // CHAT
 
+
+
 io.sockets.on('connection', function(socket){
 	
 	users++;
@@ -143,14 +145,17 @@ io.sockets.on('connection', function(socket){
 	});
 	
 	socket.on('disconnect', function(){
+		
+		clearInterval(usersOnlineInterval);
+		
 		users--;
 	});
 	
 	// Socket intervals
 	var usersOnlineInterval = setInterval(function(){
-		io.sockets.in('server').emit('usersOnline', {count:users});
+		var d =  new Date();
+		io.sockets.in('server').emit('usersOnline', {timestamp: d.getTime(), count:users});
 	},1000);
-
 	
 });
 

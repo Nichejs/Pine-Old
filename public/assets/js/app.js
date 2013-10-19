@@ -8,7 +8,9 @@
  * License: GNU GENERAL PUBLIC LICENSE
  */
 define(["jquery", "open_rpg", "chat", "map", "character", "socket"], function($, OpenRPG, ChatOpenRPG, MapOpenRPG,CharacterOpenRPG, io){
-	var App = {};
+	var App = {
+		lastTimestamp : 0
+	};
 	
 	/**
 	 * Start setting up the game
@@ -71,11 +73,28 @@ define(["jquery", "open_rpg", "chat", "map", "character", "socket"], function($,
 		 	ChatOpenRPG.init($('#chatOut').get(0), $('#chatIn').get(0));
 		});
 		
+		// Client's timestamp might not be real
+		// but we know the server sends timestamps every 1s, so we can use
+		// subsecuent messages to calculate the ping
+		
 		// Process server messages
 		OpenRPG.socket.on('usersOnline', function (data) {
- 			if(data.count){
- 				$('#usersOnline').text(data.count+' online');
+			var text = '';
+ 			// Ping measure
+ 			if(data.timestamp){
+ 				if(App.lastTimestamp > 0){
+ 					var ping = data.timestamp - 1000 - App.lastTimestamp;
+	 				text = 'Ping '+ping+"ms<br />";
+	 				App.lastTimestamp = data.timestamp;
+ 				}else{
+ 					App.lastTimestamp = data.timestamp;
+ 				}
  			}
+ 			// Users online
+ 			if(data.count){
+ 				text += data.count+' online';
+ 			}
+ 			$('#usersOnline').html(text);
 		});
 		
 		OpenRPG.socket.on('error', function (err) {
