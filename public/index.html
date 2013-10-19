@@ -89,8 +89,20 @@
 	<p align="center">
 		<small><a href="https://github.com/Open-RPG/open-rpg">Fork on Github</a></small>
 	</p>
-	<script src="/assets/js/require_2_1_8.js"></script>
+	<script src="assets/js/require_2_1_8.js"></script>
+	
+	<!-- 
+		Now we have the option to go for development or production versions
+		Simple add a <!-- before the <script> for the version you don't want
+	-->
+	
+	<!-- Production version -->
+	<!--
+	<script type="text/javascript" src="build/pine-0.0.1.js"></script> <!-- Leave this here -->
+	
+	<!-- Development version -->
 	<script type="text/javascript">
+	// Remember to update build-config.js too
 	require.config({
 		baseUrl: 'assets/js/',
 	    paths: {
@@ -110,6 +122,10 @@
 			},
 	    }
 	});
+	</script><!-- Leave this here -->
+	
+	<!-- App starter (Common to production/development) -->
+	<script type="text/javascript">
 	require(["app"],function(App){
 		var game = document.getElementById('container');
 

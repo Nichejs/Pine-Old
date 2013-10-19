@@ -7,7 +7,6 @@
  * 
  * License: GNU GENERAL PUBLIC LICENSE
  */
-
 define(["jquery", "open_rpg", "chat", "map", "character", "socket"], function($, OpenRPG, ChatOpenRPG, MapOpenRPG,CharacterOpenRPG, io){
 	var App = {};
 	
