@@ -1,0 +1,79 @@
+body{
+	margin:20px;
+	padding: 0;
+	background:#efefef;
+	font-family:"Gill Sans MT";
+}
+a, a:visited{
+	text-decoration:none;
+	color:#1C7EFF;
+}
+a:hover{
+	text-decoration:underline;
+}
+h1{
+	text-align:center;
+}
+canvas{
+	border:#ccc solid 1px;
+}
+#container{
+	position:relative;
+	width:900px;
+	margin:0 auto;
+	background:#f2f2f2;
+	box-shadow:#999 0 0 10px;
+}
+#chatIn{
+	background:#fff;
+	border:none;
+	border-top:solid 1px #ccc;
+	height:25px;
+	width:100%;
+}
+#chatOut{
+	background:transparent;
+	border:none;
+	outline:none;
+	position:absolute;
+	top:5px;
+	left:0px;
+	overflow:hidden;
+	width:250px;
+	height:400px
+}
+input{
+	padding:3px;
+}
+h2{
+	padding:5px 20px;
+	margin-bottom:0;
+	border-bottom:1px solid #ccc;
+}
+form{
+	background:white;
+	padding:20px;
+}
+input[type=text], input[type=password]{
+	background:white;
+	border-radius:3px;
+	border:#999999 solid 1px;
+}
+input[type=submit]{
+	background:white;
+	padding:3px 6px;
+	border:1px solid #999999;
+	border-radius:7px;
+	color:#1C7EFF;
+	cursor:pointer;
+}
+input[type=submit]:hover{
+	background:#1C7EFF;
+	color:white;
+	border-color:#1C7EFF;
+}
+#usersOnline{
+	position:absolute;
+	top:0;
+	right:4px;
+}
