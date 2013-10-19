@@ -77,6 +77,8 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 		 	Tree.newTree(-150,-120,40);
 		 	
 		 	Tree.newTree(80,40,40);
+		 	
+		 	Tree.newTree(20,100,40);
 			
 			// Main character
 			var character = Character.newCharacter({
