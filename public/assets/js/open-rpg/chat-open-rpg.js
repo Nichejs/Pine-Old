@@ -29,6 +29,14 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
 		
 		ChatOpenRPG.incoming();
 		ChatOpenRPG.outgoing();
+		
+		// Assign letter t to chat
+		$(document).keypress(function(event) {
+			if(event.which == 116) { // t
+ 	 			event.preventDefault();
+ 	 			$(ChatOpenRPG.input).focus();
+ 	 		}
+ 	 	});
 	};
 	
 	/**
@@ -82,7 +90,8 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
  	 		if(event.which == 13) {
  	 			event.preventDefault();
  	 			OpenRPG.socket.emit('send', { room: 'chat', message: $(ChatOpenRPG.input).val() });
- 	 			$(ChatOpenRPG.input).val('');
+ 	 			$(ChatOpenRPG.input).val('').blur();
+ 	 			$(OpenRPG.canvas.canvasElement).focus();
  	 		}
  	 	});
  	 };

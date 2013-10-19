@@ -112,8 +112,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		
 		function setKeys(event, val) {
 			// If chat has focus, stop this
-			if($('#chatIn').is(":focus"))
-				return;
+			if($('#chatIn').is(":focus")) return;
 			
 			var keyProcessed = 0;
 			      
@@ -140,8 +139,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 				}
 				keyProcessed = 1;
 			}
-			if (keyProcessed)
-				event.preventDefault();
+			if (keyProcessed) event.preventDefault();
 		}
 		  
 		window.onkeydown = function(event) { setKeys(event, 1); };
