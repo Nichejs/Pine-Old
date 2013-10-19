@@ -8,7 +8,10 @@
 
 define(["jquery", "open_rpg"],function($, OpenRPG){
  	
- 	var ChatOpenRPG = {};
+ 	var ChatOpenRPG = {
+ 		input : null,
+ 		output : null
+ 	};
 	
 	/**
 	 * Start the chat. It sends the server a subscribe message to the room "chat".
@@ -21,20 +24,25 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
 		// Connect to chat room
 		OpenRPG.socket.emit('subscribe', 'chat');
 		
-		ChatOpenRPG.incoming(incoming);
-		ChatOpenRPG.outgoing(outgoing);
+		ChatOpenRPG.input = outgoing;
+		ChatOpenRPG.output = incoming;
+		
+		ChatOpenRPG.incoming();
+		ChatOpenRPG.outgoing();
 	};
 	
 	/**
 	 * Receive new messages from the server and show them on-screen
  	 * @param {Object} DOM object where the chat messages should be appended
  	 */
- 	 ChatOpenRPG.incoming = function(textarea){
+ 	 ChatOpenRPG.incoming = function(){
  	 	
- 	 	$(textarea).append('<span style="background:#ccc; color:#222"> &raquo; Conectado </span><br />');
+ 	 	$(ChatOpenRPG.output).append('<span style="background:#ccc; color:#222"> &raquo; Conectado </span><br />');
  	 	
  	 	OpenRPG.socket.on('message', function (data) {
+ 	 		
  	 		if(data.room = 'chat'){
+ 	 			
  	 			if(data.message) {
  	 				if(data.type !== undefined){
  	 					data.message = '<span style="background:#ccc; color:#222"> &raquo; '+data.message+' </span>';
@@ -47,27 +55,34 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
  	 					}
  	 					data.message = data.user+' '+data.message;
  	 				}
-	 				$(textarea).append(data.message+"<br />");
-	 				$(textarea).scrollTop($(textarea)[0].scrollHeight);
-	 			} else {
-	 				console.error("Socket->No message:", data);
+ 	 				
+	 				ChatOpenRPG.displayMessage(data.message);
+	 				
 	 			}
  	 		}
 		});
  	 };
+ 	 
+ 	/**
+ 	 * Write a message to the chat output
+ 	 */
+	ChatOpenRPG.displayMessage = function(message){
+ 	 	$(ChatOpenRPG.output).append(message+"<br />");
+	 	$(ChatOpenRPG.output).scrollTop($(ChatOpenRPG.output)[0].scrollHeight);
+ 	};
 
 	/**
 	 * Get new messages from the user and send them to the server
 	 * They are then broadcasted from the server to the other clients.
  	 * @param {Object} DOM object where the chat should listen for messages (On enter key)
  	 */
- 	 ChatOpenRPG.outgoing = function(outgoingtext){
+ 	 ChatOpenRPG.outgoing = function(){
  	 	
- 	 	$(outgoingtext).keypress(function(event) {
+ 	 	$(ChatOpenRPG.input).keypress(function(event) {
  	 		if(event.which == 13) {
  	 			event.preventDefault();
- 	 			OpenRPG.socket.emit('send', { room: 'chat', message: $(outgoingtext).val() });
- 	 			$(outgoingtext).val('');
+ 	 			OpenRPG.socket.emit('send', { room: 'chat', message: $(ChatOpenRPG.input).val() });
+ 	 			$(ChatOpenRPG.input).val('');
  	 		}
  	 	});
  	 };

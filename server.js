@@ -161,7 +161,7 @@ io.sockets.on('connection', function(socket){
 	
 	socket.on('disconnect', function(){
 		
-		io.sockets.in('chat').emit('message', {type: 'server', message : socket.handshake.user+" left"});
+		io.sockets.in('server').emit('message', {room:'server', type: 'disconnect', user: socket.handshake.user});
 		
 		clearInterval(usersOnlineInterval);
 		

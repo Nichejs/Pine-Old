@@ -86,11 +86,29 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 		 	ChatOpenRPG.init($('#chatOut').get(0), $('#chatIn').get(0));
 		});
 		
-		// Process server messages
+		// Process ping messages
 		OpenRPG.socket.on('ping', function (data) {
 			// I divide by two to get one way only
 			var ping = ((new Date()).getTime() - data.timestamp)/2;
 			$('#server').html("Ping: "+ping+"ms");
+		});
+		
+		// Process server messages
+		OpenRPG.socket.on('message', function (data) {
+			if(data.room !== 'server') return;
+			if(data.type == 'disconnect'){
+				// User disconnected
+				// Display message on chat:
+				ChatOpenRPG.displayMessage(data.user+' left');
+				// Remove from sheetengine
+				try{
+					App.players[data.user].destroy();
+				}catch(e){}
+				// Remove from local cache
+				App.players.splice(data.user,1);
+				// Redraw
+				MapOpenRPG.draw();
+			}
 		});
 		
 		// Process other players movement
@@ -98,10 +116,6 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 			if(App.players[data.user]){
 				// Player is being tracked
 				App.players[data.user].moveTo(data.position);
-				/*App.players[data.user].setPosition(data.position);
-				Character.animateCharacter(App.players[data.user]);
-				App.players[data.user].animationState++;
-				MapOpenRPG.draw();*/
 			}else{
 				// New player, create and add to array
 				App.players[data.user] = Character.newCharacter({
