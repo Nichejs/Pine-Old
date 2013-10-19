@@ -5,7 +5,8 @@ Pine is (going to be) a massive online game, built on HTML5 canvas, JavaScript, 
 
 The plan is to build the game engine and system, while keeping everything open source, so the community can improve and work together on the game.
 
-As soon as we reach an alpha version we will start with some testint and move the development to a live server.
+As soon as we reach an alpha version we will start with some testing and move the development to a live server.
+The versions are available in [public/build](https://github.com/Open-RPG/open-rpg/tree/master/public/build).
 
 At the moment there is no real documentation because everything is very experimental.
 
