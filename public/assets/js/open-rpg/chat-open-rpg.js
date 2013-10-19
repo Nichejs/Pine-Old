@@ -41,11 +41,11 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
  	 				}
  	 				if(data.user !== undefined){
  	 					if(data.user == OpenRPG.user.name){
- 	 						data.user = '<span style="color:red">'+data.user+'</span>';
+ 	 						data.user = '[<span style="color:red">'+data.user+'</span>]';
  	 					}else{
- 	 						data.user = '<span style="color:green">'+data.user+'</span>';
+ 	 						data.user = '[<span style="color:green">'+data.user+'</span>]';
  	 					}
- 	 					data.message = data.user+': '+data.message;
+ 	 					data.message = data.user+' '+data.message;
  	 				}
 	 				$(textarea).append(data.message+"<br />");
 	 				$(textarea).scrollTop($(textarea)[0].scrollHeight);

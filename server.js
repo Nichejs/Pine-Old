@@ -144,8 +144,15 @@ io.sockets.on('connection', function(socket){
 	});
 	
 	socket.on('send', function(data) {
-		data.user = socket.handshake.user;
-	    io.sockets.in(data.room).emit('message', data);
+		if(data.room == 'chat'){
+			// Chat message
+			data.user = socket.handshake.user;
+	    	io.sockets.in(data.room).emit('message', data);
+		}else if(data.room == 'position'){
+			// User position
+			socket.broadcast.to('position').emit('update', { user: socket.handshake.user, position: data.position});
+		}
+		
 	});
 	
 	socket.on('ping', function(data) {

@@ -36,8 +36,6 @@ define(["jquery", "socket"], function($, io){
 		OpenRPG.canvas.canvasElement.height = OpenRPG.size.h;
 		OpenRPG.canvas.canvasElement.width = OpenRPG.size.w;
 		OpenRPG.canvas.size=OpenRPG.size;
-
-		console.log("OpenRPG started");
 	};
 	
 	/**

@@ -7,9 +7,11 @@
  * 
  * License: GNU GENERAL PUBLIC LICENSE
  */
-define(["jquery", "open_rpg", "chat", "map", "character", "socket"], function($, OpenRPG, ChatOpenRPG, MapOpenRPG,CharacterOpenRPG, io){
+define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], function($, OpenRPG, ChatOpenRPG, MapOpenRPG, Tree, Character, io){
+	
 	var App = {
-		lastTimestamp : 0
+		lastTimestamp : 0,	// Used for measuring ping
+		players : []		// Tracked players
 	};
 	
 	/**
@@ -65,9 +67,20 @@ define(["jquery", "open_rpg", "chat", "map", "character", "socket"], function($,
 			
 			// Server notifications
 			OpenRPG.socket.emit('subscribe', 'server');
+			// Other users position
+			OpenRPG.socket.emit('subscribe', 'position');
 			
 			// Setup map
-		 	MapOpenRPG.drawBaseSheet(OpenRPG.canvas.canvasElement, OpenRPG.canvas.size);
+		 	MapOpenRPG.init();
+		 	
+		 	// Draw tree
+		 	Tree.newTree(-150,-120,40);
+			
+			// Main character
+			var character = Character.newCharacter({
+				position: {x:110,y:0,z:0},
+				movable: true
+			});
 		 	
 		 	// Setup chat
 		 	ChatOpenRPG.init($('#chatOut').get(0), $('#chatIn').get(0));
@@ -78,6 +91,24 @@ define(["jquery", "open_rpg", "chat", "map", "character", "socket"], function($,
 			// I divide by two to get one way only
 			var ping = ((new Date()).getTime() - data.timestamp)/2;
 			$('#server').html("Ping: "+ping+"ms");
+		});
+		
+		// Process other players movement
+		OpenRPG.socket.on('update', function (data) {
+			if(App.players[data.user]){
+				// Player is being tracked
+				App.players[data.user].moveTo(data.position);
+				/*App.players[data.user].setPosition(data.position);
+				Character.animateCharacter(App.players[data.user]);
+				App.players[data.user].animationState++;
+				MapOpenRPG.draw();*/
+			}else{
+				// New player, create and add to array
+				App.players[data.user] = Character.newCharacter({
+					position : data.position,
+					movable : false
+				});
+			}
 		});
 		
 		var pingInterval = setInterval(function(){
