@@ -101,7 +101,7 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 			if(data.type == 'disconnect'){
 				// User disconnected
 				// Display message on chat:
-				ChatOpenRPG.displayMessage(data.user+' left');
+				ChatOpenRPG.displayMessage(data.user+' left', 'server');
 				// Remove from sheetengine
 				try{
 					App.players[data.user].destroy();

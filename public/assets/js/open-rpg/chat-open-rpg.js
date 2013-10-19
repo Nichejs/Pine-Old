@@ -45,16 +45,14 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
  	 */
  	 ChatOpenRPG.incoming = function(){
  	 	
- 	 	$(ChatOpenRPG.output).append('<span style="background:#ccc; color:#222"> &raquo; Conectado </span><br />');
+ 	 	ChatOpenRPG.displayMessage("Bienvenido!", 'server');
  	 	
  	 	OpenRPG.socket.on('message', function (data) {
  	 		
  	 		if(data.room = 'chat'){
  	 			
  	 			if(data.message) {
- 	 				if(data.type !== undefined){
- 	 					data.message = '<span style="background:#ccc; color:#222"> &raquo; '+data.message+' </span>';
- 	 				}
+ 	 				// If it's a user message, add some color to it
  	 				if(data.user !== undefined){
  	 					if(data.user == OpenRPG.user.name){
  	 						data.user = '[<span style="color:red">'+data.user+'</span>]';
@@ -64,8 +62,7 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
  	 					data.message = data.user+' '+data.message;
  	 				}
  	 				
-	 				ChatOpenRPG.displayMessage(data.message);
-	 				
+	 				ChatOpenRPG.displayMessage(data.message, data.type);
 	 			}
  	 		}
 		});
@@ -74,7 +71,14 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
  	/**
  	 * Write a message to the chat output
  	 */
-	ChatOpenRPG.displayMessage = function(message){
+	ChatOpenRPG.displayMessage = function(message, type){
+		if(type!==undefined){
+			switch(type){
+				case 'server':
+					message = '<span style="background:rgba(250,250,250,0.4); color:#222"> &raquo; '+message+' </span>';
+					break;
+			}
+		}
  	 	$(ChatOpenRPG.output).append(message+"<br />");
 	 	$(ChatOpenRPG.output).scrollTop($(ChatOpenRPG.output)[0].scrollHeight);
  	};
