@@ -47,27 +47,6 @@ app.post('/api/db', function (req, res) {
     
     //TODO Improve this section
     switch(req.body.type){
-    	// I leave the login function here just in case
-    	// but at the moment it's not necessary. Login is handled by the socket.
-    	/*case 'login':
-    		// Check if user exists
-    		var users = nano.use('users');
-    		// Sha1 password
-    		var sha1 = crypto.createHash('sha1');
-    		sha1.update(req.body.pass);
-    		
-    		users.view('users','name-pass', {key: [req.body.user, sha1.digest('hex')]}, function (error, view) {
-    			if(error !== null){
-    				console.log(error);
-    				res.send("An error occured");
-    				res.end();
-    			}else{
-    				console.log("Login ok");
-	    			res.send(view);
-	    			res.end();	
-    			}
-    		});
-    		break;*/
     	case 'register':
     		var data = req.body.user,
     			users = nano.use('users');
@@ -75,7 +54,7 @@ app.post('/api/db', function (req, res) {
     		var sha1 = crypto.createHash('sha1');
 		    sha1.update(data.pass);
 		    // Insert in database
-			users.insert({_id: data.name, pass: sha1.digest('hex')}, function(err, body) {
+			users.insert({_id: data.name.toLowerCase(), pass: sha1.digest('hex')}, function(err, body) {
 				if (err){
 					if(err.status_code == 409){
 						res.send("El usuario ya existe!!");
@@ -107,7 +86,7 @@ io.set('authorization', function (data, accept) {
 	var sha1 = crypto.createHash('sha1');
 	sha1.update(data.query.pass);
 	
-	users.view('lists','user-pass', {key: [data.query.user, sha1.digest('hex')]}, function (error, view) {
+	users.view('lists','user-pass', {key: [data.query.user.toLowerCase(), sha1.digest('hex')]}, function (error, view) {
 		if(error !== null){
 			console.error(error);
 			accept(null,false);

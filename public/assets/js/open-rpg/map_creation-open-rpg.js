@@ -37,11 +37,21 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 			}
 		}
 		
+		
+		
 		MapOpenRPG.draw();
 	};
 	
 	/**
-	 * Draw scene 
+	 * Redraw changed sheets
+	 */
+	MapOpenRPG.redraw = function(){
+		sheetengine.calc.calculateChangedSheets();
+		sheetengine.drawing.drawScene(true);
+	};
+	
+	/**
+	 * Draw scene from scratch
 	 */
 	MapOpenRPG.draw = function(){
 		sheetengine.calc.calculateAllSheets();

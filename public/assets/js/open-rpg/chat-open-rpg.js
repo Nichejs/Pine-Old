@@ -32,6 +32,7 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
 		
 		// Assign letter t to chat
 		$(document).keypress(function(event) {
+			if($('#chatIn').is(":focus")) return;
 			if(event.which == 116) { // t
  	 			event.preventDefault();
  	 			$(ChatOpenRPG.input).focus();
@@ -45,7 +46,7 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
  	 */
  	 ChatOpenRPG.incoming = function(){
  	 	
- 	 	ChatOpenRPG.displayMessage("Bienvenido!", 'server');
+ 	 	ChatOpenRPG.displayMessage("Welcome!", 'server');
  	 	
  	 	OpenRPG.socket.on('message', function (data) {
  	 		
@@ -57,7 +58,7 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
  	 					if(data.user == OpenRPG.user.name){
  	 						data.user = '[<span style="color:red">'+data.user+'</span>]';
  	 					}else{
- 	 						data.user = '[<span style="color:green">'+data.user+'</span>]';
+ 	 						data.user = '[<span style="color:blue">'+data.user+'</span>]';
  	 					}
  	 					data.message = data.user+' '+data.message;
  	 				}

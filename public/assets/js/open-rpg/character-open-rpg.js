@@ -104,6 +104,12 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		character.rotateSheet(character.leg2, {x:0,y:0,z:8}, {x:1,y:0,z:0}, -dir * Math.PI/8);
 	};
 	
+	/**
+	 * Make the given character movable. It sets up the listeners for the keys
+	 * and all other useful stuff. Movable as in controlled by the user. Other characters
+	 * should be non movable. 
+ 	 * @param {Object} character
+	 */
 	Character.move = function(character){
 		// keyboard events
 		var keys = {u:0,d:0,l:0,r:0};
@@ -188,12 +194,15 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 				character.setPosition(targetp);
 				Character.animateCharacter(character);
 				character.animationState++;
+				
+				// Set center on user
+				//sheetengine.scene.setCenter({x:character.centerp.x, y:character.centerp.y, z:0});
 				  
 				// Stream position data
 				OpenRPG.socket.emit('send', { room: 'position', position : targetp });
 				 
 				// Calculate sheets and draw scene
-				MapOpenRPG.draw();
+				MapOpenRPG.redraw();
 			}
 		}
 		

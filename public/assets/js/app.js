@@ -102,14 +102,17 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 				// User disconnected
 				// Display message on chat:
 				ChatOpenRPG.displayMessage(data.user+' left', 'server');
+				console.log("Removing "+data.user+", Player: ", App.players[data.user]);
 				// Remove from sheetengine
 				try{
+					MapOpenRPG.densityMap.remove(App.players[data.user]);
 					App.players[data.user].destroy();
+					
 				}catch(e){}
 				// Remove from local cache
-				App.players.splice(data.user,1);
+				delete App.players[data.user];
 				// Redraw
-				MapOpenRPG.draw();
+				MapOpenRPG.redraw();
 			}
 		});
 		
