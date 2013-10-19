@@ -73,28 +73,21 @@ define(["jquery", "open_rpg", "chat", "map", "character", "socket"], function($,
 		 	ChatOpenRPG.init($('#chatOut').get(0), $('#chatIn').get(0));
 		});
 		
-		// Client's timestamp might not be real
-		// but we know the server sends timestamps every 1s, so we can use
-		// subsecuent messages to calculate the ping
+		// Process server messages
+		OpenRPG.socket.on('ping', function (data) {
+			// I divide by two to get one way only
+			var ping = ((new Date()).getTime() - data.timestamp)/2;
+			$('#server').html("Ping: "+ping+"ms");
+		});
+		
+		var pingInterval = setInterval(function(){
+			// Ping measure
+			OpenRPG.socket.emit('ping', { timestamp: (new Date()).getTime() });
+		},1000);
 		
 		// Process server messages
 		OpenRPG.socket.on('usersOnline', function (data) {
-			var text = '';
- 			// Ping measure
- 			if(data.timestamp){
- 				if(App.lastTimestamp > 0){
- 					var ping = data.timestamp - 1000 - App.lastTimestamp;
-	 				text = 'Ping '+ping+"ms<br />";
-	 				App.lastTimestamp = data.timestamp;
- 				}else{
- 					App.lastTimestamp = data.timestamp;
- 				}
- 			}
- 			// Users online
- 			if(data.count){
- 				text += data.count+' online';
- 			}
- 			$('#usersOnline').html(text);
+			$('#usersOnline').html(data.count+' online');
 		});
 		
 		OpenRPG.socket.on('error', function (err) {

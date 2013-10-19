@@ -144,6 +144,10 @@ io.sockets.on('connection', function(socket){
 	    io.sockets.in(data.room).emit('message', data);
 	});
 	
+	socket.on('ping', function(data) {
+	    socket.emit('ping', data);
+	});
+	
 	socket.on('disconnect', function(){
 		
 		clearInterval(usersOnlineInterval);
@@ -153,8 +157,7 @@ io.sockets.on('connection', function(socket){
 	
 	// Socket intervals
 	var usersOnlineInterval = setInterval(function(){
-		var d =  new Date();
-		io.sockets.in('server').emit('usersOnline', {timestamp: d.getTime(), count:users});
+		io.sockets.in('server').emit('usersOnline', {count:users});
 	},1000);
 	
 });
