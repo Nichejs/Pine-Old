@@ -10,6 +10,13 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
  	
  	var ChatOpenRPG = {};
 	
+	/**
+	 * Start the chat. It sends the server a subscribe message to the room "chat".
+	 * By doing this it will start receiving chat messages.
+	 * It also sets up the events for the incoming and outgoing messages.
+	 * @param {Object} DOM element for incoming messages (textarea or div)
+	 * @param {Object} DOM element for outgoing messages (A text input probably)
+	 */
 	ChatOpenRPG.init = function(incoming, outgoing){
 		// Connect to chat room
 		OpenRPG.socket.emit('subscribe', 'chat');
@@ -20,7 +27,7 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
 	
 	/**
 	 * Receive new messages from the server and show them on-screen
- 	 * @param {Object} textarea
+ 	 * @param {Object} DOM object where the chat messages should be appended
  	 */
  	 ChatOpenRPG.incoming = function(textarea){
  	 	
@@ -41,7 +48,7 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
 	/**
 	 * Get new messages from the user and send them to the server
 	 * They are then broadcasted from the server to the other clients.
- 	 * @param {Object} outgoingtext
+ 	 * @param {Object} DOM object where the chat should listen for messages (On enter key)
  	 */
  	 ChatOpenRPG.outgoing = function(outgoingtext){
  	 	

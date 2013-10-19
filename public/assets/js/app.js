@@ -11,6 +11,11 @@
 define(["jquery", "open_rpg", "chat", "map", "character", "socket"], function($, OpenRPG, ChatOpenRPG, MapOpenRPG,CharacterOpenRPG, io){
 	var App = {};
 	
+	/**
+	 * Start setting up the game
+	 * @param {Object} DOM object where the game will live (A div element normally)
+	 * @param {Object} Size of the container in {w:_,h:_} format 
+	 */
 	App.init = function(gameContainer, size){
 		OpenRPG.container = gameContainer;
 		OpenRPG.size = size;
@@ -38,7 +43,10 @@ define(["jquery", "open_rpg", "chat", "map", "character", "socket"], function($,
 	
 	
 	/**
-	 * Create a new connection 
+	 * Create a new socket connection with the serve.
+	 * The username and password are required for the handshake authorization.
+	 * @param {String} User name
+	 * @param {String} Password 
 	 */
 	App.socketStart = function(user, pass){
 		console.log("Opening socket connection");
