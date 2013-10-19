@@ -113,7 +113,7 @@ io.set('authorization', function (data, accept) {
 			accept(null,false);
 		}else{
 			if(view.rows.length > 0){
-				data.sessionID = view.rows[0].id;
+				data.user = data.query.user;
 				console.log("Login ok, User="+view.rows[0].id);
 				accept(null, true);
 			}else{
@@ -133,14 +133,18 @@ io.sockets.on('connection', function(socket){
 	users++;
 	
 	socket.on('subscribe', function(room) { 
-	    socket.join(room); 
+	    socket.join(room);
+	    if(room=='chat'){
+	    	io.sockets.in(room).emit('message', {type: 'server', message : socket.handshake.user+" joined"});
+	    }
 	});
 	
 	socket.on('unsubscribe', function(room) {  
-	    socket.leave(room); 
+	    socket.leave(room);
 	});
 	
 	socket.on('send', function(data) {
+		data.user = socket.handshake.user;
 	    io.sockets.in(data.room).emit('message', data);
 	});
 	
@@ -149,6 +153,8 @@ io.sockets.on('connection', function(socket){
 	});
 	
 	socket.on('disconnect', function(){
+		
+		io.sockets.in('chat').emit('message', {type: 'server', message : socket.handshake.user+" left"});
 		
 		clearInterval(usersOnlineInterval);
 		

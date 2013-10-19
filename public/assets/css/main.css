@@ -37,7 +37,7 @@ canvas{
 	outline:none;
 	position:absolute;
 	top:5px;
-	left:0px;
+	left:5px;
 	overflow:hidden;
 	width:250px;
 	height:400px

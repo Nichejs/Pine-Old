@@ -31,11 +31,22 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
  	 */
  	 ChatOpenRPG.incoming = function(textarea){
  	 	
- 	 	$(textarea).append("Conectado!<br />");
+ 	 	$(textarea).append('<span style="background:#ccc; color:#222"> &raquo; Conectado </span><br />');
  	 	
  	 	OpenRPG.socket.on('message', function (data) {
  	 		if(data.room = 'chat'){
  	 			if(data.message) {
+ 	 				if(data.type !== undefined){
+ 	 					data.message = '<span style="background:#ccc; color:#222"> &raquo; '+data.message+' </span>';
+ 	 				}
+ 	 				if(data.user !== undefined){
+ 	 					if(data.user == OpenRPG.user.name){
+ 	 						data.user = '<span style="color:red">'+data.user+'</span>';
+ 	 					}else{
+ 	 						data.user = '<span style="color:green">'+data.user+'</span>';
+ 	 					}
+ 	 					data.message = data.user+': '+data.message;
+ 	 				}
 	 				$(textarea).append(data.message+"<br />");
 	 				$(textarea).scrollTop($(textarea)[0].scrollHeight);
 	 			} else {
@@ -55,7 +66,7 @@ define(["jquery", "open_rpg"],function($, OpenRPG){
  	 	$(outgoingtext).keypress(function(event) {
  	 		if(event.which == 13) {
  	 			event.preventDefault();
- 	 			OpenRPG.socket.emit('send', { room: 'chat', message: OpenRPG.user.name+": "+$(outgoingtext).val() });
+ 	 			OpenRPG.socket.emit('send', { room: 'chat', message: $(outgoingtext).val() });
  	 			$(outgoingtext).val('');
  	 		}
  	 	});
