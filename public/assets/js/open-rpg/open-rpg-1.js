@@ -29,7 +29,7 @@ define(["jquery", "socket"], function($, io){
 	 * Launches Game, it requires the user to be logged in. 
 	 */
 	OpenRPG.start = function(){
-		$(container).html('<canvas id="game" width="900" height="500"></canvas><div id="chatOut"></div><input type="text" id="chatIn" placeholder="Chat..."><div id="usersOnline"></div>');
+		$(container).html('<canvas id="game" width="900" height="500"></canvas><div id="chatOut"></div><input type="text" id="chatIn" placeholder="Chat..."><div id="usersOnline"></div><div id="server"></div>');
 	 	
 	 	// Canvas reference
 		OpenRPG.canvas.canvasElement=$("#game").get(0);

@@ -77,3 +77,9 @@ input[type=submit]:hover{
 	top:0;
 	right:4px;
 }
+#server{
+	position:absolute;
+	right:-220px;
+	width:200px;
+	top:0;
+}
