@@ -6,7 +6,8 @@
   "dependencies": {
     "express": "~3.3.4",
     "socket.io": "~0.9.16",
-    "nano" : "~4.1.4"
+    "nano" : "~4.1.4",
+    "requirejs" : "~2.1.9"
   },
   "devDependencies": {},
   "scripts": {
