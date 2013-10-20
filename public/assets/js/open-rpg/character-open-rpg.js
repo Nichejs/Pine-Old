@@ -88,7 +88,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 			Character.animateCharacter(character);
 			character.animationState++;
 			
-			MapOpenRPG.draw();
+			MapOpenRPG.redraw();
 		};
 		
 		return character;
