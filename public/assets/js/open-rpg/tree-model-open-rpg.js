@@ -55,7 +55,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		
 		MapOpenRPG.addToDensityMap(treeSheets);
 		
-		MapOpenRPG.draw();
+		MapOpenRPG.redraw();
 	};
 
 	return Tree;

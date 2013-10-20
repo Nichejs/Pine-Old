@@ -10,7 +10,10 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 
 	var MapOpenRPG = {
 		// Config options
-		densityMap : new sheetengine.DensityMap(5)
+		densityMap : new sheetengine.DensityMap(5),
+		drawFlag : true,
+		redrawFlag : false,
+		redrawInterval : null
 	};
 	
 	/**
@@ -18,6 +21,17 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	 */
 	MapOpenRPG.init = function(){
 		MapOpenRPG.drawBaseSheet(OpenRPG.canvas.canvasElement, OpenRPG.canvas.size);
+		
+		// Now we set up the interval for the redraw method
+		// Read the description of the redraw method for more info
+		MapOpenRPG.redrawInterval = setInterval(function(){
+			if(!MapOpenRPG.redrawFlag) return;
+			// Flag was set to true, redraw and reset flag
+			MapOpenRPG.redrawFlag = false;
+			
+			sheetengine.calc.calculateChangedSheets();
+			sheetengine.drawing.drawScene(true);
+		}, 30);
 	};
 
 	/**
@@ -37,23 +51,28 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 			}
 		}
 		
-		
-		
 		MapOpenRPG.draw();
 	};
 	
 	/**
 	 * Redraw changed sheets
+	 * Redrawing is a very expensive operation, so it will be done on a fixed time.
+	 * If the redraw function is called, it will set the redraw flag to true.
+	 * An interval will check for the flag every fixed time and redraw if necessary,
+	 * this way when many people move it will only draw every fixed time, improving 
+	 * performance.
 	 */
 	MapOpenRPG.redraw = function(){
-		sheetengine.calc.calculateChangedSheets();
-		sheetengine.drawing.drawScene(true);
+		MapOpenRPG.redrawFlag = true;
 	};
 	
 	/**
 	 * Draw scene from scratch
 	 */
 	MapOpenRPG.draw = function(){
+		// Check flag, this way we ensure it is only drawn once.
+		if(!MapOpenRPG.drawFlag) return false;
+		MapOpenRPG.drawFlag = false;
 		sheetengine.calc.calculateAllSheets();
 		sheetengine.drawing.drawScene(true);
 	};
