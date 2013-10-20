@@ -111,7 +111,6 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 				// User disconnected
 				// Display message on chat:
 				ChatOpenRPG.displayMessage(data.user+' left', 'server');
-				console.log("Removing "+data.user+", Player: ", App.players[data.user]);
 				// Remove from sheetengine
 				try{
 					MapOpenRPG.densityMap.remove(App.players[data.user]);
