@@ -12,7 +12,7 @@ At the moment there is no real documentation because everything is very experime
 The graphic engine is [Sheetengine](http://sheetengine.codeplex.com/)
 
 ### Contributors
-- Alejandro U. Álvarez [http://urbanoalvarez]()
+- Alejandro U. Álvarez [http://urbanoalvarez](http://urbanoalvarez.es)
 - Nicolás Lozano Argüelles
 
 ### License
