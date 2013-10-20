@@ -78,12 +78,19 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 		 	
 		 	Tree.newTree(80,40,0,60);
 		 	
-		 	Tree.newTree(20,100,0,120);
+		 	Tree.newTree(20,500,0,120);
+		 	
+		 	Tree.newTree(-450,-90,0,110);
+		 	
+		 	Tree.newTree(-110,400,0,70);
+		 	
+		 	Tree.newTree(-30,-50,0,90);
 			
 			// Main character
 			var character = Character.newCharacter({
 				position: {x:110,y:0,z:0},
-				movable: true
+				movable: true,
+				name: OpenRPG.user.name
 			});
 		 	
 		 	// Setup chat
@@ -109,12 +116,11 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 				try{
 					MapOpenRPG.densityMap.remove(App.players[data.user]);
 					App.players[data.user].destroy();
-					
 				}catch(e){}
 				// Remove from local cache
 				delete App.players[data.user];
-				// Redraw
-				MapOpenRPG.redraw();
+				// Remove from static queue (Also redraws)
+				MapOpenRPG.removeFromStaticQueue(data.user);
 			}
 		});
 		
@@ -127,7 +133,8 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 				// New player, create and add to array
 				App.players[data.user] = Character.newCharacter({
 					position : data.position,
-					movable : false
+					movable : false,
+					name : data.user
 				});
 			}
 		});

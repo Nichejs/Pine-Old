@@ -13,6 +13,14 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		if(properties.movable)
 			Character.move(person);
 		
+		// Insert a function to draw the player name
+		MapOpenRPG.addToStaticQueue(properties.name, function(){
+			var ctx = sheetengine.context;
+			// Creating pos as follows will avoid referencing.
+			var pos = {x: properties.position.x, y: properties.position.y, z: properties.position.z + 30};
+			var p = MapOpenRPG.coordsGameToCanvas(pos);
+			ctx.strokeText(properties.name, p.u - properties.name.length*2.5, p.v);
+		});
 		return person;
 	};
 	
