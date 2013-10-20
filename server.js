@@ -35,6 +35,23 @@ app.configure(function () {
     app.use(express.static(path.join(__dirname,'/public'), {maxAge: 0}));
 });
 
+// List all users
+app.get('/api/list', function (req, res) {
+	var users = nano.use('users');
+	users.list(function(err, body){
+		var response = 'An error occured';
+		if(!err){
+			response = "<h1>Users:</h1><ul>";
+			body.rows.forEach(function(doc){
+				console.log(doc);
+				response += "<li>"+doc.id+"</li>";
+			});
+			response += "</ul>";
+		}
+		res.send(response);
+	});
+});
+
 // CouchDB Access
 app.post('/api/db', function (req, res) {
 	// Nano!
