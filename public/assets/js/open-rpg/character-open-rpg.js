@@ -19,7 +19,8 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 			// Creating pos as follows will avoid referencing.
 			var pos = {x: properties.position.x, y: properties.position.y, z: properties.position.z + 30};
 			var p = MapOpenRPG.coordsGameToCanvas(pos);
-			ctx.strokeText(properties.name, p.u - properties.name.length*2.5, p.v);
+			ctx.font="13px Helvetica, sans-serif";
+			ctx.strokeText(properties.name, p.u - properties.name.length*3, p.v, 200);
 		});
 		return person;
 	};
