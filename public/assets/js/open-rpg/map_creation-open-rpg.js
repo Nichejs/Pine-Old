@@ -50,7 +50,6 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 				// Generate random shades of green
 				// Temporary fix just to make it look a little better
 				var color = 'rgba('+Math.ceil(70+Math.random()*20)+',120,'+Math.ceil(30+Math.random()*25)+',1)';
-				console.log('Basesheet color: '+color);
 				basesheet.color = color;
 			}
 		}
