@@ -74,11 +74,11 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 		 	MapOpenRPG.init();
 		 	
 		 	// Draw tree
-		 	Tree.newTree(-150,-120,40);
+		 	Tree.newTree(-150,-120,0,80);
 		 	
-		 	Tree.newTree(80,40,40);
+		 	Tree.newTree(80,40,0,60);
 		 	
-		 	Tree.newTree(20,100,40);
+		 	Tree.newTree(20,100,0,120);
 			
 			// Main character
 			var character = Character.newCharacter({

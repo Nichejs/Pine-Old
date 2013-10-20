@@ -8,15 +8,17 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 	 * @param {int} y coordinate
 	 * @param {int} z coordinate
 	 */
-	Tree.newTree = function(x,y,z) {
+	Tree.newTree = function(x,y,z,size) {
 		var tree = {
 			x_position : null,
 			y_position : null,
-			z_position : null
+			z_position : null,
+			size : null
 		};
 		tree.x_position = x;
 		tree.y_position = y;
-		tree.z_position = z;
+		tree.z_position = z+size/2; // Fix for height*80
+		tree.size = {w: size, h: size}; // For some reason it doesn't work if h != w
 		
 		Tree.drawPineTexture(tree);
 	};
@@ -27,25 +29,30 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 	 * @param {Object} tree
 	 */
 	Tree.drawPineTexture = function(tree){
-		var scale_v = 80/900;
-		var scale_h = 80/500;
-		var size_adapted = {w:scale_v*OpenRPG.canvas.size.w,h:scale_h*OpenRPG.canvas.size.h};
-		var sheet4 = new sheetengine.Sheet({x:tree.x_position,y:tree.y_position,z:tree.z_position}, {alphaD:0,betaD:0,gammaD:0}, size_adapted);
-		var sheet5 = new sheetengine.Sheet({x:tree.x_position,y:tree.y_position,z:tree.z_position}, {alphaD:0,betaD:0,gammaD:90}, size_adapted);
+		var sheet4 = new sheetengine.Sheet({x:tree.x_position,y:tree.y_position,z:tree.z_position}, {alphaD:0,betaD:0,gammaD:0}, tree.size);
+		var sheet5 = new sheetengine.Sheet({x:tree.x_position,y:tree.y_position,z:tree.z_position}, {alphaD:0,betaD:0,gammaD:90}, tree.size);
 		
 		function drawStructure(context){
+			// Pine shape
+			// Only one color, shading does the rest
 			context.fillStyle = '#BDFF70';
 			context.beginPath();
-			context.moveTo(40,0);
-			context.lineTo(60,30);
-			context.lineTo(50,30);
-			context.lineTo(70,60);
-			context.lineTo(10,60);
-			context.lineTo(30,30);
-			context.lineTo(20,30);
+			// All relative to height
+			context.moveTo(tree.size.h*0.5,0);
+			context.lineTo(tree.size.h*0.75, tree.size.w*0.375);
+			context.lineTo(tree.size.h*0.625,tree.size.w*0.375);
+			context.lineTo(tree.size.h*0.875,tree.size.w*0.75);
+			context.lineTo(tree.size.h*0.125,tree.size.w*0.75);
+			context.lineTo(tree.size.h*0.375,tree.size.w*0.375);
+			context.lineTo(tree.size.h*0.25, tree.size.w*0.375);
 			context.fill();
+			// Log
 			context.fillStyle = '#725538';
-    		context.fillRect(35,60,10,20);
+			var x = Math.ceil(tree.size.w*0.4375),
+				y = Math.ceil(tree.size.h*0.75),
+				w = Math.ceil(tree.size.w*0.125),
+				h = Math.ceil(tree.size.h*0.25);
+			context.fillRect(x,y,w,h);
     	}
     		
     	drawStructure(sheet4.context);
