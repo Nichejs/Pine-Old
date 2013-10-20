@@ -50,7 +50,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		var ctx = body.context;
 		
 		// head
-		ctx.fillStyle = '#FF0';
+		ctx.fillStyle = '#FFD296';
 		ctx.fillRect(2,2,7,4);
 		ctx.fillStyle = '#550';
 		ctx.fillRect(2,0,7,2);
@@ -62,7 +62,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		ctx.fillRect(0,6,11,7);
 		  
 		// hands
-		ctx.fillStyle = '#FF0';
+		ctx.fillStyle = '#FFD296';
 		ctx.fillRect(0,11,1,2);
 		ctx.fillRect(10,11,1,2);
 		    

@@ -135,8 +135,10 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 				}catch(e){}
 				// Remove from local cache
 				delete App.players[data.user];
-				// Remove from static queue (Also redraws)
+				// Remove from static queue
 				if(data.user !== OpenRPG.user.name) MapOpenRPG.removeFromStaticQueue(data.user);
+				
+				MapOpenRPG.redraw();
 			}
 		});
 		
