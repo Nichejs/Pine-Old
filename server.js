@@ -111,11 +111,11 @@ io.sockets.on('connection', function(socket){
 	
 	users++;
 	
+	// Notify everyone
+	io.sockets.in('server').emit('message', {room: 'server', type: 'connect', user: socket.handshake.user});
+	
 	socket.on('subscribe', function(room) { 
 	    socket.join(room);
-	    if(room=='chat'){
-	    	io.sockets.in(room).emit('message', {type: 'server', message : socket.handshake.user+" joined"});
-	    }
 	});
 	
 	socket.on('unsubscribe', function(room) {  

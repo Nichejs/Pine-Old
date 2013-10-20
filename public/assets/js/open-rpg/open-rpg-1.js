@@ -15,7 +15,7 @@ define(["jquery", "socket"], function($, io){
 		size : null,
 		container : null,
 		coords : {x:0,y:0},
-		socketHost : 'http://c.uplei.com:9002',
+		socketHost : 'http://uplei.com:9002',
 		socket : null,
 		debug : false,
 		canvas : {canvasElement:null,size:null},

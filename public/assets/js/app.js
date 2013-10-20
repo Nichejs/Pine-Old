@@ -107,6 +107,23 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 		// Process server messages
 		OpenRPG.socket.on('message', function (data) {
 			if(data.room !== 'server') return;
+			
+			if(data.type == 'connect'){
+				// User connected
+				// We will allow only one connection, so if the user
+				// is the same, bye bye!
+				if(OpenRPG.user.name.toLowerCase() == data.user.toLowerCase()){
+					// They are the same, bye bye to one of them
+					ChatOpenRPG.displayMessage(data.user+' logged in twice', 'server');
+					OpenRPG.socket.disconnect();
+					window.location = '/';
+				}else{
+					// Display message on chat:
+					ChatOpenRPG.displayMessage(data.user+' joined', 'server');
+				}
+				
+			}
+			
 			if(data.type == 'disconnect'){
 				// User disconnected
 				// Display message on chat:
@@ -119,7 +136,7 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 				// Remove from local cache
 				delete App.players[data.user];
 				// Remove from static queue (Also redraws)
-				MapOpenRPG.removeFromStaticQueue(data.user);
+				if(data.user !== OpenRPG.user.name) MapOpenRPG.removeFromStaticQueue(data.user);
 			}
 		});
 		
