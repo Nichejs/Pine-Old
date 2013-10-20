@@ -13,7 +13,9 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 		densityMap : new sheetengine.DensityMap(5),
 		drawFlag : true,
 		redrawFlag : false,
-		redrawInterval : null
+		redrawInterval : null,
+		zoomLevel : 1,
+		staticQueue : []
 	};
 	
 	/**
@@ -31,6 +33,9 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 			
 			sheetengine.calc.calculateChangedSheets();
 			sheetengine.drawing.drawScene(true);
+			
+			// Execute the static queue
+			MapOpenRPG.executeStaticQueue();
 		}, 30);
 	};
 
@@ -55,6 +60,60 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 		}
 		
 		MapOpenRPG.draw();
+	};
+	
+	/**
+	 * Transform a pair of real coordinates (i.e. mouse coordinates)
+	 * into the game system coordinates (relative to the map center)
+	 * @param {Object} Real life coordinates {x:_,y:_}
+	 * @returns {Object} An object with the coordinates {x:_,y:_}
+	 */
+	MapOpenRPG.coordsRealToGame = function(coords){
+		var pxy = sheetengine.transforms.inverseTransformPoint({u:coords.y+sheetengine.scene.center.u, v:coords.x+sheetengine.scene.center.v});
+		pxy.x = (pxy.x - sheetengine.scene.center.x) / MapOpenRPG.zoomLevel + sheetengine.scene.center.x;
+		pxy.y = (pxy.y - sheetengine.scene.center.y) / MapOpenRPG.zoomLevel + sheetengine.scene.center.y;
+		return pxy;
+	};
+	
+	/**
+	 * Transform a point in the game to a canvas point. 
+	 * @param {Object} A point in the game {x,y,z}
+	 * @return {Object} A canvas coordinate object {u,v}
+	 */
+	MapOpenRPG.coordsGameToCanvas = function(point){
+		return sheetengine.drawing.getPointuv(point);
+	};
+	
+	/**
+	 * sheetengine allows to draw directly on the canvas,
+	 * but we have to redraw everything everytime sheetengine redraws.
+	 * So to make it easier we use the staticQueue. It will be a list of functions
+	 * that are executed everytime the canvas is redrawn.
+	 * Each of those functions should draw something on the canvas.
+	 * @param {Object} Array key, username for example
+	 * @param {function} A function to be executed
+	 */
+	MapOpenRPG.addToStaticQueue = function(id, fn){
+		MapOpenRPG.staticQueue[id] = fn;
+	};
+	
+	/**
+	 * Removes an element from the static queue
+	 * @param {Object} Array key, username for example
+	 */
+	MapOpenRPG.removeFromStaticQueue = function(id){
+		delete MapOpenRPG.staticQueue[id];
+	};
+	
+	/**
+	 * This executes the functions stored in the queue (if any)
+	 * Should only be called from the draw functions. 
+	 */
+	MapOpenRPG.executeStaticQueue = function(){
+		// Using for..in because indixes might not be numbers
+		for(var index in MapOpenRPG.staticQueue) {
+			MapOpenRPG.staticQueue[index]();
+		}
 	};
 	
 	/**
