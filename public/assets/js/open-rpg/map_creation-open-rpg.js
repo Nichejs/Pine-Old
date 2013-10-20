@@ -47,7 +47,11 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 		for (var x=-3; x<=3; x++) {
 			for (var y=-3; y<=3; y++) {
 				var basesheet = new sheetengine.BaseSheet({x:x*200,y:y*200,z:0}, {alphaD:90,betaD:0,gammaD:0}, {w:200,h:200});
-				basesheet.color = '#5D7E36';
+				// Generate random shades of green
+				// Temporary fix just to make it look a little better
+				var color = 'rgba('+Math.ceil(70+Math.random()*20)+',120,'+Math.ceil(30+Math.random()*25)+',1)';
+				console.log('Basesheet color: '+color);
+				basesheet.color = color;
 			}
 		}
 		
