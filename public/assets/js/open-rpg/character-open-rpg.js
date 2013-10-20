@@ -25,10 +25,11 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		backhead.context.fillRect(0,0,8,6);
 		// legs
 		var leg1 = new sheetengine.Sheet({x:-3,y:0,z:4}, {alphaD:0,betaD:0,gammaD:0}, {w:5,h:8});
-		leg1.context.fillStyle = '#00F';
+		var legColor = 'rgba('+Math.ceil(10+Math.random()*245)+','+Math.ceil(10+Math.random()*245)+','+Math.ceil(10+Math.random()*245)+',1)';
+		leg1.context.fillStyle = legColor;
 		leg1.context.fillRect(0,0,5,10);
 		var leg2 = new sheetengine.Sheet({x:3,y:0,z:4}, {alphaD:0,betaD:0,gammaD:0}, {w:5,h:8});
-		leg2.context.fillStyle = '#00F';
+		leg2.context.fillStyle = legColor;
 		leg2.context.fillRect(0,0,5,10);
 		
 		// define character object
@@ -48,7 +49,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		ctx.fillRect(8,2,1,1);
 		
 		// body
-		ctx.fillStyle = '#F0F';
+		ctx.fillStyle = 'rgba('+Math.ceil(10+Math.random()*245)+','+Math.ceil(10+Math.random()*245)+','+Math.ceil(10+Math.random()*245)+',1)';
 		ctx.fillRect(0,6,11,7);
 		  
 		// hands
