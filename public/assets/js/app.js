@@ -11,6 +11,7 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 	
 	var App = {
 		lastTimestamp : 0,	// Used for measuring ping
+		character : null,	// Main character reference
 		players : []		// Tracked players
 	};
 	
@@ -87,7 +88,7 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 		 	Tree.newTree(-30,-50,0,90);
 			
 			// Main character
-			var character = Character.newCharacter({
+			App.character = Character.newCharacter({
 				position: {x:110,y:0,z:0},
 				movable: true,
 				name: OpenRPG.user.name
@@ -122,6 +123,8 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 					ChatOpenRPG.displayMessage(data.user+' joined', 'server');
 				}
 				
+				// Notify of our position
+				OpenRPG.socket.emit('send', { room: 'position', position : App.character.centerp });
 			}
 			
 			if(data.type == 'disconnect'){
