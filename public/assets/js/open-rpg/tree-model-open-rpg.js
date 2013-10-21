@@ -1,6 +1,6 @@
 define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, OpenRPG){ //Module name
 
-	var Tree = { };
+	var Tree = {};
 
 	/**
 	 * Draws a tree on the specified coordinates, of the specified size

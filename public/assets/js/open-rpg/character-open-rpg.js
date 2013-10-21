@@ -1,8 +1,6 @@
 define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, OpenRPG){
 	
-	var Character = {
-		
-	};
+	var Character = {};
 	
 	/**
 	 * Create a new Character object
@@ -68,7 +66,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		    
 		character.animationState = 0;
 		
-		MapOpenRPG.draw();
+		MapOpenRPG.redraw();
 		
 		/**
 		 * Moves the character to specified position, takes care of orientation
@@ -154,7 +152,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 			if (event.keyCode == '32') {
 				if (jump == 0 && val == 1) {
 					jump = 1;
-					jumpspeed = 15;
+					jumpspeed = 10;
 				}
 				keyProcessed = 1;
 			}
@@ -225,4 +223,3 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 	return Character;
 	
 });
-
