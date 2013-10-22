@@ -36,6 +36,9 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket", "gui
 	App.displayLogin = function(){
 		$(OpenRPG.container).append('<h2>Login:</h2><form action="/" method="post" id="loginForm">Usuario: <input type="text" name="user" id="username" /> Contraseña: <input type="password" name="pass" id="pass" /> <input type="submit" value="Login" /><p>Not a user? <a href="/register.html">Register!</a></p></form>');
 		
+		// Set focus on login
+		$('#username').focus();
+		
 		// Process the form
 		$('#loginForm').submit(function(event){
 			event.preventDefault();
