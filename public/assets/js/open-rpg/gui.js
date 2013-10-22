@@ -15,10 +15,10 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
 	};
 	
 	GUI.init = function(){
-		GUI.characterStatus = $(OpenRPG.container).append('<div id="characterStatus"></div>');
+		GUI.characterStatus = $('<div id="characterStatus"></div>').appendTo(OpenRPG.container);
 		// Extra things are hidden by default
-		GUI.armorBar = $('#characterStatus').append('<div class="bar" id="armorBar"></div>');
-		GUI.healthBar = $('#characterStatus').append('<div class="bar" id="healthBar"></div>').show();
+		GUI.armorBar = $('<div class="bar" id="armorBar"></div>').appendTo(GUI.characterStatus);
+		GUI.healthBar = $('<div class="bar" id="healthBar"></div>').appendTo(GUI.characterStatus).show();
 		
 		// Display character config button
 	};
@@ -28,7 +28,7 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
  	 * @param {int} health, 0 - 100
 	 */
 	GUI.setHealth = function(health){
-		var width = health*100/150; // It should be divided by the bar width
+		var width = health*150/100; // It should be divided by the bar width
 		GUI.healthBar.html('<div style="width:'+width+'px; background:red; height:4px;"></div>');
 	};
 	

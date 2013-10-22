@@ -25,11 +25,17 @@ canvas{
 	box-shadow:#999 0 0 10px;
 }
 #chatIn{
-	background:#fff;
+	background:rgba(255,255,255,0.4);
+	box-shadow:#333 0 0 5px;
 	border:none;
-	border-top:solid 1px #ccc;
 	height:25px;
-	width:100%;
+	width:400px;
+	position:absolute;
+	bottom:30px;
+	left:50%;
+	margin-left:-200px;
+	outline:none;
+	display:none;
 }
 #chatOut{
 	background:transparent;
@@ -85,7 +91,7 @@ input[type=submit]:hover{
 }
 #characterStatus{
 	position:absolute;
-	bottom:60px;
+	bottom:5px;
 	width:100%;
 }
 .bar{
@@ -97,4 +103,5 @@ input[type=submit]:hover{
 	margin:0 auto;
 	margin-bottom:3px;
 	display:none;
+	overflow:hidden;
 }
