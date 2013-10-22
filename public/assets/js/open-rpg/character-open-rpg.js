@@ -8,6 +8,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 	 */
 	Character.newCharacter = function(properties){
 		var person = Character.defineCharacter(properties.position);
+		person.name = properties.name;
 		if(properties.movable)
 			Character.move(person);
 		
@@ -18,6 +19,8 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 			var pos = {x: properties.position.x, y: properties.position.y, z: properties.position.z + 30};
 			var p = MapOpenRPG.coordsGameToCanvas(pos);
 			ctx.font="13px Helvetica, sans-serif";
+			ctx.strokeStyle = 'black';
+			ctx.lineWidth = 1;
 			ctx.strokeText(properties.name, p.u - properties.name.length*3, p.v, 200);
 		});
 		return person;
@@ -96,6 +99,36 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 			character.animationState++;
 			
 			MapOpenRPG.redraw();
+		};
+		
+		/**
+		 * Draws a circle around a character.
+		 * Only one circle can be drawn for a certain character
+		 * @param {int} Width in pixels of the arc
+		 * @param {color} HTML color (Name, Hex, rgb, rgba...) 
+		 */
+		character.addCircle = function(width, color){
+			// draw arc around user
+			// Insert a function to draw the player name
+			MapOpenRPG.addToStaticQueue(character.name+'_circle', function(){
+				var ctx = sheetengine.context;
+				ctx.save();
+				ctx.scale(1, 0.5);
+				ctx.lineWidth = width;
+				ctx.strokeStyle = color;
+				ctx.beginPath();
+				var userp = MapOpenRPG.coordsGameToCanvas(character.centerp);
+				ctx.arc(userp.u, userp.v*2, 15, 0, Math.PI*2);
+				ctx.stroke();
+				ctx.restore();
+			});
+		};
+		
+		/**
+		 * Removes the circle around a user 
+		 */
+		character.removeCircle = function(){
+			MapOpenRPG.removeFromStaticQueue(character.name+'_circle');
 		};
 		
 		return character;

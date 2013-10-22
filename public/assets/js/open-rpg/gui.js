@@ -25,10 +25,10 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
 	
 	/**
 	 * Set the health amount in the GUI display
- 	 * @param {int} health, 0 - 100
+ 	 * @param {float} Health amount, any float in [0,100]
 	 */
 	GUI.setHealth = function(health){
-		var width = health*150/100; // It should be divided by the bar width
+		var width = Math.ceil(health*150/100); // It should be divided by the bar width
 		GUI.healthBar.html('<div style="width:'+width+'px; background:red; height:4px;"></div>');
 	};
 	

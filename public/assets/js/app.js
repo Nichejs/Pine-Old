@@ -99,6 +99,9 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket", "gui
 				name: OpenRPG.user.name
 			});
 			
+			// Circle around character test
+			character.addCircle(3,'rgba(255,255,255,0.1)');
+			
 			// Launch GUI
 			GUI.init();
 			GUI.setHealth(100);
