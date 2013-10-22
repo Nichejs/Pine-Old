@@ -7,7 +7,7 @@
  * 
  * License: GNU GENERAL PUBLIC LICENSE
  */
-define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], function($, OpenRPG, ChatOpenRPG, MapOpenRPG, Tree, Character, io){
+define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket", "gui"], function($, OpenRPG, ChatOpenRPG, MapOpenRPG, Tree, Character, io, GUI){
 	
 	var App = {
 		lastTimestamp : 0,	// Used for measuring ping
@@ -56,10 +56,13 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 		console.time('Socket connected');
 		OpenRPG.socket = io.connect(OpenRPG.socketHost, { query: "user="+user+"&pass="+pass });
 		
-		// Launch game
-		OpenRPG.start();
+		// Display a loading message
+		$('form').html("Loading...");
 		
 		OpenRPG.socket.on('connect', function () {
+			// Launch game
+			OpenRPG.start();
+			
 			console.timeEnd("Socket connected");
 			
 			// Setup username
@@ -92,6 +95,10 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 				movable: true,
 				name: OpenRPG.user.name
 			});
+			
+			// Launch GUI
+			GUI.init();
+			GUI.setHealth(100);
 		 	
 		 	// Setup chat
 		 	ChatOpenRPG.init($('#chatOut').get(0), $('#chatIn').get(0));
@@ -168,7 +175,7 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 		});
 		
 		OpenRPG.socket.on('error', function (err) {
-			window.location = '/';
+			//window.location = '/';
 			console.error("Error de conextion: ",err);
 		});
 	};
