@@ -10,7 +10,9 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 
 	var MapOpenRPG = {
 		// Config options
+		initied : false,
 		densityMap : new sheetengine.DensityMap(5),
+		boundary : {};
 		drawFlag : true,
 		redrawFlag : false,
 		redrawInterval : null,
@@ -21,8 +23,8 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	/**
 	 * Set up the map and main character 
 	 */
-	MapOpenRPG.init = function(){
-		MapOpenRPG.drawBaseSheet(OpenRPG.canvas.canvasElement, OpenRPG.canvas.size);
+	MapOpenRPG.init = function(callback){
+		MapOpenRPG.drawBaseSheet(OpenRPG.canvas.canvasElement, OpenRPG.canvas.size, callback);
 		
 		// Now we set up the interval for the redraw method
 		// Read the description of the redraw method for more info
@@ -36,6 +38,7 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 			
 			// Execute the static queue
 			MapOpenRPG.executeStaticQueue();
+
 		}, 30);
 	};
 
@@ -45,22 +48,30 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
  	 * @param {Object} Reference to the canvas element
 	 * @param {Object} Domensions of the canvas element {w,h}
 	 */
-	MapOpenRPG.drawBaseSheet = function(canvasElement, size){
-		sheetengine.scene.init(canvasElement, size);
-		var num = 3;
-		// Define some basesheets
-		for (var x=-3; x<=3; x++) {
-			for (var y=-3; y<=3; y++) {
-				var basesheet = new sheetengine.BaseSheet({x:x*200,y:y*200,z:0}, {alphaD:90,betaD:0,gammaD:0}, {w:200,h:200});
-				// Generate random shades of green
-				// Temporary fix just to make it look a little better
-				var color = 'rgba('+Math.ceil(70+Math.random()*20)+',120,'+Math.ceil(30+Math.random()*25)+',1)';
-				basesheet.color = color;
-			}
-		}
+	MapOpenRPG.drawBaseSheet = function(canvasElement, size,callback){
+		sheetengine.scene.init(canvasElement,  {w:2000,h:1500});
+		// var num = 3;
+		// // Define some basesheets
+		// for (var x=-3; x<=3; x++) {
+		// 	for (var y=-3; y<=3; y++) {
+		// 		var basesheet = new sheetengine.BaseSheet({x:x*200,y:y*200,z:0}, {alphaD:90,betaD:0,gammaD:0}, {w:200,h:200});
+		// 		// Generate random shades of green
+		// 		// Temporary fix just to make it look a little better
+		// 		var color = 'rgba('+Math.ceil(70+Math.random()*20)+',120,'+Math.ceil(30+Math.random()*25)+',1)';
+		// 		basesheet.color = color;
+		// 	}
+		// }
+
+		var levelsize = 1;
+		var yardcenter = {yardx:-5, yardy:1};
+		sheetengine.scene.getYards('http://www.crossyards.com', yardcenter, levelsize, '4f22e4a725202ea828000033', function(){
+			MapOpenRPG.draw();
+			callback();
+		});
 		
-		MapOpenRPG.draw();
+		//MapOpenRPG.draw();
 	};
+
 	
 	/**
 	 * Transform a pair of real coordinates (i.e. mouse coordinates)
@@ -146,6 +157,36 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	MapOpenRPG.addToDensityMap = function(sheets){
 		MapOpenRPG.densityMap.addSheets(sheets);
 	};
+
+
+	/**
+	 * Set the center of the scene to the one given by parameter.
+	 * 
+	 * @param {Object} A point in the game {x,y,z}
+	 */
+
+	 MapOpenRPG.setCenter = function(point){
+
+	 	//The z position of the scene will allways be 0
+	 	//so when the character jump the center of the scene
+	 	//don't go up and down
+
+	 	point.z = 0;
+		sheetengine.scene.setCenter(point);
+	};
+
+
+	MapOpenRPG.setBoundary = function(yardpos) {
+				// for boundary we use relative yard coordinates
+				var radius = 0.5;
+				MapOpenRPG.boundary = {
+					x1: (yardpos.relyardx - radius) * sheetengine.scene.tilewidth,
+					y1: (yardpos.relyardy - radius) * sheetengine.scene.tilewidth,
+					x2: (yardpos.relyardx + radius) * sheetengine.scene.tilewidth,
+					y2: (yardpos.relyardy + radius) * sheetengine.scene.tilewidth
+				};
+	};
+	
 	
 	return MapOpenRPG;
 });

@@ -20,12 +20,14 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 			ctx.font="13px Helvetica, sans-serif";
 			ctx.strokeText(properties.name, p.u - properties.name.length*3, p.v, 200);
 		});
+
 		return person;
 	};
 	
 	// function for creating a character with a body and 2 legs
 	Character.defineCharacter = function(centerp) {
 		// character definition for animation with sheet motion
+
 		var body = new sheetengine.Sheet({x:0,y:0,z:15}, {alphaD:0,betaD:0,gammaD:0}, {w:11,h:14});
 		var backhead = new sheetengine.Sheet({x:0,y:-1,z:19}, {alphaD:0,betaD:0,gammaD:0}, {w:8,h:6});
 		backhead.context.fillStyle = '#550';
@@ -211,8 +213,13 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 				  
 				// Stream position data
 				OpenRPG.socket.emit('send', { room: 'position', position : targetp });
+
+				 //console.log("La posicion del usuario pasa a ser x:"+targetp.x+" y:"+targetp.y+" z:"+targetp.z);
+				 //targetpCanvas = MapOpenRPG.coordsGameToCanvas(targetp);
+				 //console.log("La posicion en el canvas es x:"+ targetpCanvas.u+" y:"+targetpCanvas.v);
 				 
 				// Calculate sheets and draw scene
+				MapOpenRPG.setCenter(targetp);
 				MapOpenRPG.redraw();
 			}
 		}

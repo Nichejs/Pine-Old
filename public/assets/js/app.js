@@ -71,29 +71,41 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket"], fun
 			// Other users position
 			OpenRPG.socket.emit('subscribe', 'position');
 			
+
+			//Now it's a random position, but it will be
+		 	//gotten from the DB
+		 	var mainCharacterPosition = {x:110,y:0,z:0};
+			
 			// Setup map
-		 	MapOpenRPG.init();
+		 	MapOpenRPG.init(function(){
+		 		App.character = Character.newCharacter({
+						position: mainCharacterPosition,
+						movable: true,
+						name: OpenRPG.user.name
+					});
+				console.log("Main Character created after the Yard");
+		 	});
 		 	
 		 	// Draw tree
-		 	Tree.newTree(-150,-120,0,80);
+		 	// Tree.newTree(-150,-120,0,80);
 		 	
-		 	Tree.newTree(80,40,0,60);
+		 	// Tree.newTree(80,40,0,60);
 		 	
-		 	Tree.newTree(20,500,0,120);
+		 	// Tree.newTree(20,500,0,120);
 		 	
-		 	Tree.newTree(-450,-90,0,110);
+		 	// Tree.newTree(-450,-90,0,110);
 		 	
-		 	Tree.newTree(-110,400,0,70);
+		 	// Tree.newTree(-110,400,0,70);
 		 	
-		 	Tree.newTree(-30,-50,0,90);
+		 	// Tree.newTree(-30,-50,0,90);
 			
-			// Main character
-			App.character = Character.newCharacter({
-				position: {x:110,y:0,z:0},
-				movable: true,
-				name: OpenRPG.user.name
-			});
 		 	
+
+		
+			
+			//Set the center of the scene where the main
+			//character is located
+		 	MapOpenRPG.setCenter(mainCharacterPosition);
 		 	// Setup chat
 		 	ChatOpenRPG.init($('#chatOut').get(0), $('#chatIn').get(0));
 		});
