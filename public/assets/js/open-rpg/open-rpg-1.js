@@ -23,6 +23,11 @@ define(["jquery", "socket"], function($, io){
 		user : {
 			id : null,
 			name : null
+		},
+		// Canvas mouse coordinates
+		mouse: {
+			u : 0,
+			v : 0
 		}
 	};
 	
@@ -30,13 +35,22 @@ define(["jquery", "socket"], function($, io){
 	 * Launches Game, it requires the user to be logged in. 
 	 */
 	OpenRPG.start = function(){
-		$(OpenRPG.container).html('<canvas id="game" width="900" height="500"></canvas><div id="chatOut"></div><input type="text" id="chatIn" placeholder="Chat..."><div id="usersOnline"></div><div id="server"></div>');
+		$(OpenRPG.container).html('<canvas id="game" width="900" height="500"></canvas><div id="chatOut" class="clickThrough"></div><input type="text" id="chatIn" class="clickThrough" placeholder="Chat..."><div id="usersOnline" class="clickThrough"></div><div id="server"></div>');
 	 	
 	 	// Canvas reference
 		OpenRPG.canvas.canvasElement=$("#game").get(0);
 		OpenRPG.canvas.canvasElement.height = OpenRPG.size.h;
 		OpenRPG.canvas.canvasElement.width = OpenRPG.size.w;
 		OpenRPG.canvas.size=OpenRPG.size;
+		
+		$('canvas').mousemove(function(evt){
+			// Update mouse coordinates
+			var rect = OpenRPG.canvas.canvasElement.getBoundingClientRect();
+			OpenRPG.mouse = {
+				u: evt.clientX - rect.left,
+				v: evt.clientY - rect.top
+			};
+		});
 	};
 	
 	/**

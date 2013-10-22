@@ -22,6 +22,24 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	 * Set up the map and main character 
 	 */
 	MapOpenRPG.init = function(){
+		//MapOpenRPG.setTime(18);
+		
+		// Light test
+	 	$('.light').change(function(){
+	 		var p = { x: $('#light_x').val(), y: $('#light_y').val(), z: $('#light_z').val() };
+	 		var p1 = {x: 1, y: -1, z: (-p.x + p.y) / p.z};
+	 		//		 [a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0]]
+	 		var p2 = {x: p.y*p1.z - p.z*p1.y, y: p.z*p1.x - p.x*p1.z, z: p.x*p1.y - p.y*p1.x};
+	 		
+	 		sheetengine.shadows.lightSource = p;
+			sheetengine.shadows.lightSourcep1 = p1;  // perpendicular to lightsource, scalar prod is 0 : 1x -1y -1z = 0
+			sheetengine.shadows.lightSourcep2 = p2;  // perpendicular both to lightsource and p1 (ls x p1 = p2)
+			sheetengine.shadows.shadowAlpha = 0.8;
+			sheetengine.shadows.shadeAlpha = 0.6;
+		
+			MapOpenRPG.draw();
+	 	});
+		
 		MapOpenRPG.drawBaseSheet(OpenRPG.canvas.canvasElement, OpenRPG.canvas.size);
 		
 		// Now we set up the interval for the redraw method
@@ -37,6 +55,8 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 			// Execute the static queue
 			MapOpenRPG.executeStaticQueue();
 		}, 30);
+		
+		
 	};
 
 	/**
@@ -155,6 +175,42 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	 */
 	MapOpenRPG.addToDensityMap = function(sheets){
 		MapOpenRPG.densityMap.addSheets(sheets);
+	};
+	
+	/**
+	 * This will be kind of difficult to implement, it should define
+	 * the direction of the light for each time of day and year.
+	 * It has to define 3 vectors, one will be the direction of light, and then 2 perpendicular vectors.
+	 * This will suppose that at 0h the sun is horizontal. And at 12h it is perpendicular to the ground. 
+	 */
+	MapOpenRPG.setTime = function(time){
+		
+		/*
+		 * function crossProduct(a, b) {
+				// Check lengths
+			  if (a.length != 3 || b.length != 3) {
+			     return;
+			  }
+			 
+			  return [a[1]*b[2] - a[2]*b[1],
+			          a[2]*b[0] - a[0]*b[2],
+			          a[0]*b[1] - a[1]*b[0]];
+			 
+			}
+		 */
+		
+		// After some testing, I still have no idea how to get this right
+		
+		var p = { x: $('#light_x').val(), y: $('#light_y').val(), z: $('#light_z').val() };
+ 		var p1 = {x: 1, y: -1, z: (-p.x + p.y) / p.z};
+ 		var p2 = {x: p.y*p1.z - p.z*p1.y, y: p.z*p1.x - p.x*p1.z, z: p.x*p1.y - p.y*p1.x};
+	 		
+		// adjust the light source
+		sheetengine.shadows.lightSource = { x: -1, y: time, z: 1 };
+		sheetengine.shadows.lightSourcep1 = { x: -1, y: -time, z: -1 };  // perpendicular to lightsource, scalar prod is 0 : 1x -1y -1z = 0
+		sheetengine.shadows.lightSourcep2 = { x: 1, y: 0, z: 0 };  // perpendicular both to lightsource and p1 (ls x p1 = p2)
+		sheetengine.shadows.shadowAlpha = 0.8;
+		sheetengine.shadows.shadeAlpha = 0.6;
 	};
 	
 	return MapOpenRPG;

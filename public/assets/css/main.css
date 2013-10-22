@@ -46,7 +46,7 @@ canvas{
 	left:5px;
 	overflow:hidden;
 	width:250px;
-	height:400px
+	height:400px;
 }
 input{
 	padding:3px;
@@ -95,7 +95,7 @@ input[type=submit]:hover{
 	width:100%;
 }
 .bar{
-	background:rgba(255,255,255,0.2);
+	background:rgba(255,255,255,0.4);
 	border-right:#000 solid 1px;
 	border-left:#000 solid 1px;
 	height:4px;
@@ -104,4 +104,18 @@ input[type=submit]:hover{
 	margin-bottom:3px;
 	display:none;
 	overflow:hidden;
+}
+.menu{
+	background:rgba(255,255,255,0.55);
+	padding:10px;
+	position:absolute;
+	box-shadow:rgba(0,0,0,0.4) 0 0 10px;
+}
+.clickThrough{
+	pointer-events:none;
+}
+#config{
+	top:5px;
+	right:5px;
+	z-index:2;
 }

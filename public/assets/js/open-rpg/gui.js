@@ -21,6 +21,26 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
 		GUI.healthBar = $('<div class="bar" id="healthBar"></div>').appendTo(GUI.characterStatus).show();
 		
 		// Display character config button
+		GUI.configScreen = $('<div id="config" class="menu">Config screen</div>').appendTo(OpenRPG.container);
+		
+		GUI.menu = $('<div id="context" class="menu">Menu</div>').appendTo('body').hide();
+		
+		// Replace canvases context menu
+		$('canvas').bind("contextmenu", function(e) {
+			e.preventDefault();
+			console.log("Moving menu");
+			$('#context').css({
+		        top: e.pageY+'px',
+		        left: e.pageX+'px'
+		    }).show();
+		});
+		// Hide the menu
+		$('#context').click(function() {
+	        $('#context').hide();
+	    });
+	    $(document).click(function() {
+	        $('#context').hide();
+	    });
 	};
 	
 	/**
