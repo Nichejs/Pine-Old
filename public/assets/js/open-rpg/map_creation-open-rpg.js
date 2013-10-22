@@ -11,8 +11,8 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	var MapOpenRPG = {
 		// Config options
 		initied : false,
-		densityMap : new sheetengine.DensityMap(5),
-		boundary : {};
+		densityMap : null,
+		boundary : {},
 		drawFlag : true,
 		redrawFlag : false,
 		redrawInterval : null,
@@ -25,7 +25,6 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	 */
 	MapOpenRPG.init = function(callback){
 		MapOpenRPG.drawBaseSheet(OpenRPG.canvas.canvasElement, OpenRPG.canvas.size, callback);
-		
 		// Now we set up the interval for the redraw method
 		// Read the description of the redraw method for more info
 		MapOpenRPG.redrawInterval = setInterval(function(){
@@ -62,11 +61,16 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 		// 	}
 		// }
 
-		var levelsize = 1;
+		var levelsize = 2;
 		var yardcenter = {yardx:-5, yardy:1};
 		sheetengine.scene.getYards('http://www.crossyards.com', yardcenter, levelsize, '4f22e4a725202ea828000033', function(){
-			MapOpenRPG.draw();
-			callback();
+		
+		 MapOpenRPG.densityMap = new sheetengine.DensityMap(5);
+		// MapOpenRPG.densityMap.addSheets(sheetengine.sheets);
+		
+		MapOpenRPG.setBoundary();
+		MapOpenRPG.draw();
+		callback();
 		});
 		
 		//MapOpenRPG.draw();
@@ -175,19 +179,70 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 		sheetengine.scene.setCenter(point);
 	};
 
-
-	MapOpenRPG.setBoundary = function(yardpos) {
+	/**
+	 *Set the area where the user can walk whithout having to
+	 *load a new yard
+	 *@param {object} the relative center of the actual yard {relyardx,relyardy,relyardz}
+	 */
+	MapOpenRPG.setBoundary = function() {
 				// for boundary we use relative yard coordinates
-				var radius = 0.5;
-				MapOpenRPG.boundary = {
-					x1: (yardpos.relyardx - radius) * sheetengine.scene.tilewidth,
-					y1: (yardpos.relyardy - radius) * sheetengine.scene.tilewidth,
-					x2: (yardpos.relyardx + radius) * sheetengine.scene.tilewidth,
-					y2: (yardpos.relyardy + radius) * sheetengine.scene.tilewidth
-				};
+		var yardpos = sheetengine.scene.getYardFromPos(OpenRPG.characterCoords);
+		var radius = 0.5;
+		MapOpenRPG.boundary = {
+			x1: (yardpos.relyardx - radius) * sheetengine.scene.tilewidth,
+			y1: (yardpos.relyardy - radius) * sheetengine.scene.tilewidth,
+			x2: (yardpos.relyardx + radius) * sheetengine.scene.tilewidth,
+			y2: (yardpos.relyardy + radius) * sheetengine.scene.tilewidth
+		};
 	};
-	
-	
+
+
+	/**
+	 *Check if the position is out of the actual boundary
+	 *
+	 *@param {object} the position to check {x,y,z}
+	 *@return boolean true if the user is out, false if is not
+	 */
+	MapOpenRPG.checkBoundaries = function(position){
+			if (position.x >= MapOpenRPG.boundary.x1 &&
+				position.y >= MapOpenRPG.boundary.y1 &&
+				position.x <= MapOpenRPG.boundary.x2 &&
+				position.y <= MapOpenRPG.boundary.y2) 
+				return false;
+			return true;
+	};
+
+	/**
+	 *Remove the current yard and replace it with the one especify
+	 *
+	 *TO-DO Change the function getNewYards() from sheetengine to
+	 *receive only two parametres, the json with the yard description
+	 *and the callback. Once that changed it's made the function newYard
+	 *will have as a parameter the json
+	 *
+	 */
+
+	MapOpenRPG.newYard = function(){
+
+		// set new boundary
+		MapOpenRPG.setBoundary();
+
+		//only for testing, it will be replace once the function getNewYards 
+		//is changed
+		var yardpos = sheetengine.scene.getYardFromPos(OpenRPG.characterCoords);
+		sheetengine.scene.getNewYards('http://www.crossyards.com', yardpos, 2, '4f22e4a725202ea828000033', function(newsheets, newobjects, removedsheets, removedobjects){
+			MapOpenRPG.densityMap.removeSheets(removedsheets);
+				for (var i=0;i<removedobjects.length;i++) {
+					MapOpenRPG.densityMap.removeSheets(removedobjects[i].sheets);
+				}
+			MapOpenRPG.densityMap.addSheets(newsheets);
+			console.log("calling redraw after getting the yard");
+			MapOpenRPG.redraw();
+
+		});
+
+	}
+
 	return MapOpenRPG;
 });
 

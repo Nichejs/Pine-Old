@@ -14,7 +14,7 @@ define(["jquery", "socket"], function($, io){
 		map : null,
 		size : null,
 		container : null,
-		coords : {x:0,y:0},
+		characterCoords : {x:0,y:0,z:0},
 		socketHost : 'http://uplei.com:9002',
 		socket : null,
 		debug : false,

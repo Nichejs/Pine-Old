@@ -217,9 +217,14 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 				 //console.log("La posicion del usuario pasa a ser x:"+targetp.x+" y:"+targetp.y+" z:"+targetp.z);
 				 //targetpCanvas = MapOpenRPG.coordsGameToCanvas(targetp);
 				 //console.log("La posicion en el canvas es x:"+ targetpCanvas.u+" y:"+targetpCanvas.v);
-				 
+
 				// Calculate sheets and draw scene
-				MapOpenRPG.setCenter(targetp);
+				OpenRPG.characterCoords = targetp;
+				MapOpenRPG.setCenter(OpenRPG.characterCoords);
+				if(MapOpenRPG.checkBoundaries(OpenRPG.characterCoords)){
+					MapOpenRPG.newYard();
+					console.log("A new yard has been load");
+				}
 				MapOpenRPG.redraw();
 			}
 		}
