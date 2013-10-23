@@ -22,23 +22,7 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	 * Set up the map and main character 
 	 */
 	MapOpenRPG.init = function(){
-		//MapOpenRPG.setTime(18);
-		
-		// Light test
-	 	$('.light').change(function(){
-	 		var p = { x: $('#light_x').val(), y: $('#light_y').val(), z: $('#light_z').val() };
-	 		var p1 = {x: 1, y: -1, z: (-p.x + p.y) / p.z};
-	 		//		 [a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0]]
-	 		var p2 = {x: p.y*p1.z - p.z*p1.y, y: p.z*p1.x - p.x*p1.z, z: p.x*p1.y - p.y*p1.x};
-	 		
-	 		sheetengine.shadows.lightSource = p;
-			sheetengine.shadows.lightSourcep1 = p1;  // perpendicular to lightsource, scalar prod is 0 : 1x -1y -1z = 0
-			sheetengine.shadows.lightSourcep2 = p2;  // perpendicular both to lightsource and p1 (ls x p1 = p2)
-			sheetengine.shadows.shadowAlpha = 0.8;
-			sheetengine.shadows.shadeAlpha = 0.6;
-		
-			MapOpenRPG.draw();
-	 	});
+		MapOpenRPG.setTime(12);
 		
 		MapOpenRPG.drawBaseSheet(OpenRPG.canvas.canvasElement, OpenRPG.canvas.size);
 		
@@ -181,34 +165,52 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	 * This will be kind of difficult to implement, it should define
 	 * the direction of the light for each time of day and year.
 	 * It has to define 3 vectors, one will be the direction of light, and then 2 perpendicular vectors.
-	 * This will suppose that at 0h the sun is horizontal. And at 12h it is perpendicular to the ground. 
+	 * This will suppose that at 0h the sun is horizontal. And at 12h it is perpendicular to the ground.
+	 * 
+	 * It will also mange the night overlay, and it's opacity so it's realistic.
+	 * At some point it would be amazing to be able to have lights... I think we could mimic lights
+	 * using something like -webkit-mask-image
+	 * 
+	 * @param {ing} Hour of the day in 24h format, no minutes.
 	 */
 	MapOpenRPG.setTime = function(time){
 		
-		/*
-		 * function crossProduct(a, b) {
-				// Check lengths
-			  if (a.length != 3 || b.length != 3) {
-			     return;
-			  }
-			 
-			  return [a[1]*b[2] - a[2]*b[1],
-			          a[2]*b[0] - a[0]*b[2],
-			          a[0]*b[1] - a[1]*b[0]];
-			 
-			}
-		 */
+		// During the night shadows are gone, and we overlay a div
+		// to simulate the different lighting.
+		if(time > 20 || time < 8){
+			sheetengine.shadows.lightSource = { x: -1, y: 0, z: -1 };
+		    sheetengine.shadows.lightSourcep1 = { x: 0, y: 1, z: 0 };
+		    sheetengine.shadows.lightSourcep2 = { x: 1, y: 0, z: 0 };
+			$('#overlay').css({'backgroundColor' : 'rgba(0,0,0,0.3)'}).show();
+			sheetengine.shadows.shadowAlpha = 0.1;
+			sheetengine.shadows.shadeAlpha = 0.7;
+			return;
+		}else if(time < 10 || time > 18){
+			// Twilight
+			$('#overlay').css({'backgroundColor' : 'rgba(255,219,77,0.06)'}).show();
+		}
 		
-		// After some testing, I still have no idea how to get this right
+		var y = (time - 12)/5;
 		
-		var p = { x: $('#light_x').val(), y: $('#light_y').val(), z: $('#light_z').val() };
- 		var p1 = {x: 1, y: -1, z: (-p.x + p.y) / p.z};
+		if(y < -2) y = -2;
+		if(y > 2) y = 2;
+		
+		var p = { x: -0.5, y: y, z: -0.5 };
+		
+ 		if(Math.abs(p.y) > 0){
+ 			var p1 = {x: -0.5, y: (-0.5*p.x - 0.5*p.z) / p.y, z: -0.5};
+ 		}else{
+ 			var p1 = {x: 0, y: 0, z: 1};
+ 		}
+ 		
  		var p2 = {x: p.y*p1.z - p.z*p1.y, y: p.z*p1.x - p.x*p1.z, z: p.x*p1.y - p.y*p1.x};
-	 		
+	 	
+	 	console.log("Light for "+time+"h: ",p,p1,p2);
+	 	
 		// adjust the light source
-		sheetengine.shadows.lightSource = { x: -1, y: time, z: 1 };
-		sheetengine.shadows.lightSourcep1 = { x: -1, y: -time, z: -1 };  // perpendicular to lightsource, scalar prod is 0 : 1x -1y -1z = 0
-		sheetengine.shadows.lightSourcep2 = { x: 1, y: 0, z: 0 };  // perpendicular both to lightsource and p1 (ls x p1 = p2)
+		sheetengine.shadows.lightSource = p;
+		sheetengine.shadows.lightSourcep1 = p1;  // perpendicular to lightsource, scalar prod is 0 : 1x -1y -1z = 0
+		sheetengine.shadows.lightSourcep2 = p2;  // perpendicular both to lightsource and p1 (ls x p1 = p2)
 		sheetengine.shadows.shadowAlpha = 0.8;
 		sheetengine.shadows.shadeAlpha = 0.6;
 	};
