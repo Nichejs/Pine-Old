@@ -1,6 +1,7 @@
 /**
  * Pine GUI
- * All data layers presented on top of the game should be handled here
+ * All data layers presented on top of the game should be handled here.
+ * Adding or removing content from them too.
  * 
  * https://github.com/Open-RPG/open-rpg
  * 
@@ -21,7 +22,12 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
 		GUI.healthBar = $('<div class="bar" id="healthBar"></div>').appendTo(GUI.characterStatus).show();
 		
 		// Display character config button
-		GUI.configScreen = $('<div id="config" class="menu">Config screen</div>').appendTo(OpenRPG.container);
+		GUI.configScreen = $('<div id="configContainer"><div id="configIcons"><ul></ul></div><div id="configMain"></div></div>').appendTo(OpenRPG.container);
+		
+		// Add initial config menu entries
+		GUI.addConfigMenu('Configuration', 'gear');
+		GUI.addConfigMenu('Character', 'user');
+		GUI.addConfigMenu('Log out', 'power-off');
 		
 		GUI.menu = $('<div id="context" class="menu">Menu</div>').appendTo('body').hide();
 		
@@ -41,6 +47,15 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
 	    $(document).click(function() {
 	        $('#context').hide();
 	    });
+	};
+	
+	/**
+	 * Add a new menu item to the configure screen
+	 * @param {String} Name of the menu, it should be unique.
+	 * @param {String} Font-awesome icon name 
+	 */
+	GUI.addConfigMenu = function(name, icon){
+		$('#configIcons ul').append('<li><a href="#config" title="'+name+'"><i class="fa fa-'+icon+' fa-fw"></i></a></li>');
 	};
 	
 	/**

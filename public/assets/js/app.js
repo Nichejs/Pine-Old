@@ -114,7 +114,7 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket", "gui
 		OpenRPG.socket.on('ping', function (data) {
 			// I divide by two to get one way only
 			var ping = ((new Date()).getTime() - data.timestamp)/2;
-			$('#server').html("Ping: "+ping+"ms");
+			$('#server').html('<i class="fa fa-laptop"></i> Ping: '+ping+"ms");
 		});
 		
 		// Process server messages
@@ -177,7 +177,7 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket", "gui
 		
 		// Process server messages
 		OpenRPG.socket.on('usersOnline', function (data) {
-			$('#usersOnline').html(data.count+' online');
+			$('#usersOnline').html('<i class="fa fa-user"></i> '+data.count+' online');
 		});
 		
 		OpenRPG.socket.on('error', function (err) {
