@@ -64,7 +64,7 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
 	 */
 	GUI.setHealth = function(health){
 		var width = Math.ceil(health*150/100); // It should be divided by the bar width
-		GUI.healthBar.html('<div style="width:'+width+'px; background:red; height:4px;"></div>');
+		GUI.healthBar.html('<div style="width:'+width+'px; background:rgba(255,0,0,0.6); height:4px;"></div>');
 	};
 	
 	return GUI;
