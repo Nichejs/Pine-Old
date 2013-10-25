@@ -34,6 +34,7 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket", "gui
 	 * Displays a login box and handles its events. 
 	 */
 	App.displayLogin = function(){
+		$('#loading').remove();
 		$(OpenRPG.container).append('<h2>Login:</h2><form action="/" method="post" id="loginForm">Usuario: <input type="text" name="user" id="username" /> Contraseña: <input type="password" name="pass" id="pass" /> <input type="submit" value="Login" /><p>Not a user? <a href="/register.html">Register!</a></p></form>');
 		
 		// Set focus on login
@@ -60,7 +61,7 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket", "gui
 		OpenRPG.socket = io.connect(OpenRPG.socketHost, { query: "user="+user+"&pass="+pass });
 		
 		// Display a loading message
-		$('form').html("Loading...");
+		$('form').html('<i class="fa fa-spinner fa-spin"></i> Loading...');
 		
 		OpenRPG.socket.on('connect', function () {
 			// Launch game

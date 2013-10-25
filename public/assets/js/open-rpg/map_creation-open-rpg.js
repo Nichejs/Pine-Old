@@ -33,11 +33,7 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 			// Flag was set to true, redraw and reset flag
 			MapOpenRPG.redrawFlag = false;
 			
-			sheetengine.calc.calculateChangedSheets();
-			sheetengine.drawing.drawScene(true);
-			
-			// Execute the static queue
-			MapOpenRPG.executeStaticQueue();
+			MapOpenRPG.drawChanges();
 		}, 30);
 		
 		
@@ -140,6 +136,18 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	 */
 	MapOpenRPG.redraw = function(){
 		MapOpenRPG.redrawFlag = true;
+	};
+	
+	/**
+	 * Only call after adding static stuff!
+	 * This will redraw all the changed sheets again. 
+	 */
+	MapOpenRPG.drawChanges = function(){
+		sheetengine.calc.calculateChangedSheets();
+		sheetengine.drawing.drawScene(true);
+		
+		// Execute the static queue
+		MapOpenRPG.executeStaticQueue();
 	};
 	
 	/**

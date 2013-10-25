@@ -11,7 +11,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		person.name = properties.name;
 		if(properties.movable)
 			Character.move(person);
-		
+			
 		// Insert a function to draw the player name
 		MapOpenRPG.addToStaticQueue(properties.name, function(){
 			var ctx = sheetengine.context;
@@ -157,6 +157,16 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		var jumpspeed = 0;
 		var jump = 0;
 		
+		character.moved = false;
+		
+		// Set the move timer
+		setInterval(function(){
+			if(!character.moved) return;
+			// Stream position data
+			OpenRPG.socket.emit('send', { room: 'position', position : character.centerp });
+			character.moved = false;
+		}, 15);
+		
 		function setKeys(event, val) {
 			// If chat has focus, stop this
 			if($('#chatIn').is(":focus")){
@@ -241,9 +251,9 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 				
 				// Set center on user
 				//sheetengine.scene.setCenter({x:character.centerp.x, y:character.centerp.y, z:0});
-				  
-				// Stream position data
-				OpenRPG.socket.emit('send', { room: 'position', position : targetp });
+				
+				// Position is streamed only on draw
+				character.moved = true;
 				 
 				// Calculate sheets and draw scene
 				MapOpenRPG.redraw();
