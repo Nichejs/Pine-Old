@@ -59,16 +59,6 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 			}
 		}
 		
-		// Image test
-		var testSheet = new sheetengine.Sheet({x:150,y:-150,z:59}, {alphaD:0,betaD:0,gammaD:0}, {w:352,h:118});
-		var img = new Image();
-		img.src = '/assets/img/logo.png';
-		img.onload = function() {
-			testSheet.context.drawImage(img, 0,0);
-			testSheet.canvasChanged();
-		};
-			
-		
 		MapOpenRPG.draw();
 	};
 	

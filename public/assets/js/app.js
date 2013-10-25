@@ -94,14 +94,14 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket", "gui
 		 	Tree.newTree(-30,-50,0,90);
 			
 			// Main character
-			var character = Character.newCharacter({
+			OpenRPG.character = Character.newCharacter({
 				position: {x:110,y:0,z:0},
 				movable: true,
 				name: OpenRPG.user.name
 			});
 			
 			// Circle around character test
-			character.addCircle(3,'rgba(255,255,255,0.1)');
+			OpenRPG.character.addCircle(3,'rgba(255,255,255,0.1)');
 			
 			// Launch GUI
 			GUI.init();

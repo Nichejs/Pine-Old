@@ -12,7 +12,9 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
 	var GUI = {
 		characterStatus: null,
 		armorBar: null,
-		healthBar: null
+		healthBar: null,
+		context: null,
+		menu: []
 	};
 	
 	GUI.init = function(){
@@ -22,14 +24,23 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
 		GUI.healthBar = $('<div class="bar" id="healthBar"></div>').appendTo(GUI.characterStatus).show();
 		
 		// Display character config button
-		GUI.configScreen = $('<div id="configContainer"><div id="configIcons"><ul></ul></div><div id="configMain"></div></div>').appendTo(OpenRPG.container);
+		GUI.configScreen = $('<div id="configContainer"><div id="configIcons"><ul></ul></div><div id="configMain"><i id="configMenuArrow" class="arrow-right-small"></i></div></div>').appendTo(OpenRPG.container);
 		
 		// Add initial config menu entries
-		GUI.addConfigMenu('Configuration', 'gear');
-		GUI.addConfigMenu('Character', 'user');
-		GUI.addConfigMenu('Log out', 'power-off');
+		GUI.addConfigMenu('Configuration', 'gear', 'text', function(){
+			return $('<div class="menuPanel"><h3>Config</h3>No options available</div>').appendTo('#configMain').hide();
+		});
+		GUI.addConfigMenu('Character', 'user', 'text', function(){
+			var obj = $('<div class="menuPanel"><h3>Character</h3>No options available</div>').appendTo('#configMain').hide();
+			return obj;
+		});
+		GUI.addConfigMenu('Log out', 'power-off', 'exec', function(){
+			window.location.reload();
+		});
 		
-		GUI.menu = $('<div id="context" class="menu">Menu</div>').appendTo('body').hide();
+		
+		
+		GUI.context = $('<div id="context" class="menu">Menu</div>').appendTo('body').hide();
 		
 		// Replace canvases context menu
 		$('canvas').bind("contextmenu", function(e) {
@@ -40,22 +51,70 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
 		        left: e.pageX+'px'
 		    }).show();
 		});
-		// Hide the menu
-		$('#context').click(function() {
-	        $('#context').hide();
-	    });
-	    $(document).click(function() {
-	        $('#context').hide();
+		
+	    $('canvas').click(function() {
+	        $(GUI.context).hide();
 	    });
 	};
 	
 	/**
 	 * Add a new menu item to the configure screen
+	 * If you want to reference the name later, write it
+	 * the same way you did when creating it.
+	 * 
 	 * @param {String} Name of the menu, it should be unique.
-	 * @param {String} Font-awesome icon name 
+	 * @param {String} Font-awesome icon name
 	 */
-	GUI.addConfigMenu = function(name, icon){
-		$('#configIcons ul').append('<li><a href="#config" title="'+name+'"><i class="fa fa-'+icon+' fa-fw"></i></a></li>');
+	GUI.addConfigMenu = function(name, icon, type, fn){
+		// Display the button
+		var button = $('<li><a href="#config" title="'+name+'"><i class="fa fa-'+icon+' fa-fw"></i></a></li>').appendTo('#configIcons ul');
+		
+		var menuElement = null;
+		
+		if(type == 'text'){
+			menuElement = fn();
+		}
+		
+		// Store a reference
+		GUI.menu[name] = {
+			button: button,
+			content: menuElement
+		};
+		
+		// Attach click event
+		$(GUI.menu[name].button).find('a').click(function(e){
+			e.preventDefault();
+			e.stopPropagation();
+			GUI.hideMenuPanels();
+			if(type == 'text'){
+				$(GUI.menu[name].content).show();
+				$('#configMain').show().css({
+					top: $(GUI.menu[name].button).offset().top - 145
+				});	
+			}else if(type=='exec'){
+				fn();
+			}
+		});
+		
+		// Attach event to close menus
+		$('canvas').click(function(){
+			GUI.hideMenuPanels();
+		});
+	};
+	
+	/**
+	 * Hides all panels in the menu.
+	 */
+	GUI.hideMenuPanels = function(){
+		$('.menuPanel').hide();
+		$('#configMain').hide();
+	};
+	
+	/**
+	 * Show the selected panel 
+	 */
+	GUI.showPanel = function(name){
+		
 	};
 	
 	/**

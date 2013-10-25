@@ -11,7 +11,6 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		person.name = properties.name;
 		if(properties.movable)
 			Character.move(person);
-			
 		// Insert a function to draw the player name
 		MapOpenRPG.addToStaticQueue(properties.name, function(){
 			var ctx = sheetengine.context;
@@ -68,6 +67,8 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		ctx.fillRect(10,11,1,2);
 		    
 		character.animationState = 0;
+		
+		character.jumpspeed = 10;
 		
 		MapOpenRPG.redraw();
 		
@@ -195,7 +196,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 			if (event.keyCode == '32') {
 				if (jump == 0 && val == 1) {
 					jump = 1;
-					jumpspeed = 10;
+					jumpspeed = character.jumpspeed;
 				}
 				keyProcessed = 1;
 			}
@@ -208,20 +209,21 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		function loop() {
 			var dx = 0;
 			var dy = 0;
+			var speed = 5;
 			if (keys.u) {
-				dy = -5;
+				dy = -speed;
 				character.setOrientation({alphaD:0,betaD:0,gammaD:180});
 			}
 			if (keys.d) {
-				dy = 5;
+				dy = speed;
 				character.setOrientation({alphaD:0,betaD:0,gammaD:0});
 			}
 			if (keys.l) {
-				dx = -5;
+				dx = -speed;
 				character.setOrientation({alphaD:0,betaD:0,gammaD:270});
 			}
 			if (keys.r) {
-				dx = 5;
+				dx = speed;
 				character.setOrientation({alphaD:0,betaD:0,gammaD:90});
 			}
 			if (dx != 0)
