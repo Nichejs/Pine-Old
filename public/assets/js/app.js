@@ -73,10 +73,10 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket", "gui
 			
 			// Add bottom stats
 				// Online users
-				GUI.addBotomInfo('online','');
+				GUI.addBotomInfo('online', '<i class="fa fa-user"></i> 1 online');
 				
 				// Ping
-				GUI.addBotomInfo('ping','');
+				GUI.addBotomInfo('ping', '<i class="fa fa-laptop"></i> Ping: 1ms');
 				
 				// Get version number from Github:
 				$.get("https://api.github.com/repos/open-rpg/open-rpg/tags", function(data){
