@@ -148,10 +148,10 @@ input[type=submit]:hover{
 	background:#222;
 	border-bottom:#333333 solid 1px;
 	padding:5px 4px;
+	text-shadow:#000 0 -2px 0px;
 }
 #configIcons a:hover{
 	background:#444;
-	text-shadow:#000 0 1px 1px;
 }
 #configMain{
 	margin-left: 30px;
@@ -165,7 +165,7 @@ input[type=submit]:hover{
 	border: solid 1px #000;
 	display:none;
 	border-radius:3px;
-	text-shadow:#000 0 -1px 1px;
+	text-shadow:#000 0 -2px 0px;
 }
 #overlay{
 	width:100%;
