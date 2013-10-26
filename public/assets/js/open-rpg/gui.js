@@ -14,7 +14,8 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
 		armorBar: null,
 		healthBar: null,
 		context: null,
-		menu: []
+		menu: [],
+		bottomInfo: []
 	};
 	
 	GUI.init = function(){
@@ -115,6 +116,27 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
 	 */
 	GUI.showPanel = function(name){
 		
+	};
+	
+	/**
+	 * Add a container box to the bottom row
+	 * @param {String} Unique name for the info box
+	 * @param {String} HTML initial content (Can be left blank)
+	 */
+	GUI.addBotomInfo = function(name, content){
+		GUI.bottomInfo[name] = $('<span></span>').appendTo("#bottomInfo");
+		if(content!==undefined){
+			GUI.updateBottomInfo(name, content);
+		}
+	};
+	
+	/**
+	 * Update the bottom container
+	 * @param {String} Identifier, must exists
+	 * @param {String} HTML content to insert
+	 */
+	GUI.updateBottomInfo = function(name, content){
+		$(GUI.bottomInfo[name]).html(content);
 	};
 	
 	/**

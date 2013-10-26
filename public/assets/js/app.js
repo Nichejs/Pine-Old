@@ -67,6 +67,23 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket", "gui
 			// Launch game
 			OpenRPG.start();
 			
+			// Launch GUI
+			GUI.init();
+			GUI.setHealth(100);
+			
+			// Add bottom stats
+				// Online users
+				GUI.addBotomInfo('online','');
+				
+				// Ping
+				GUI.addBotomInfo('ping','');
+				
+				// Get version number from Github:
+				$.get("https://api.github.com/repos/open-rpg/open-rpg/tags", function(data){
+					GUI.addBotomInfo('version', 'Build: '+data[data.length-1].name);
+				});
+			// -------------
+			
 			console.timeEnd("Socket connected");
 			
 			// Setup username
@@ -102,20 +119,28 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket", "gui
 			
 			// Circle around character test
 			OpenRPG.character.addCircle(3,'rgba(255,255,255,0.1)');
-			
-			// Launch GUI
-			GUI.init();
-			GUI.setHealth(100);
 		 	
 		 	// Setup chat
 		 	ChatOpenRPG.init($('#chatOut').get(0), $('#chatIn').get(0));
+		 	
+		 	// Send ping messages
+			var pingInterval = setInterval(function(){
+				// Ping measure
+				OpenRPG.socket.emit('ping', { timestamp: (new Date()).getTime() });
+			},1000);
+			
 		});
 		
 		// Process ping messages
 		OpenRPG.socket.on('ping', function (data) {
 			// I divide by two to get one way only
 			var ping = ((new Date()).getTime() - data.timestamp)/2;
-			$('#server').html('<i class="fa fa-laptop"></i> Ping: '+ping+"ms");
+			GUI.updateBottomInfo('ping', '<i class="fa fa-laptop"></i> Ping: '+ping+"ms");
+		});
+		
+		// Process server messages
+		OpenRPG.socket.on('usersOnline', function (data) {
+			GUI.updateBottomInfo('online', '<i class="fa fa-user"></i> '+data.count+' online');
 		});
 		
 		// Process server messages
@@ -169,16 +194,6 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket", "gui
 					name : data.user
 				});
 			}
-		});
-		
-		var pingInterval = setInterval(function(){
-			// Ping measure
-			OpenRPG.socket.emit('ping', { timestamp: (new Date()).getTime() });
-		},1000);
-		
-		// Process server messages
-		OpenRPG.socket.on('usersOnline', function (data) {
-			$('#usersOnline').html('<i class="fa fa-user"></i> '+data.count+' online');
 		});
 		
 		OpenRPG.socket.on('error', function (err) {
