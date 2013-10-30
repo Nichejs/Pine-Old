@@ -29,11 +29,23 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
 		
 		// Add initial config menu entries
 		GUI.addConfigMenu('Configuration', 'gear', 'text', function(){
-			return $('<div class="menuPanel"><h3>Config</h3>No options available</div>').appendTo('#configMain').hide();
+			return $('<div class="menuPanel"><h3>Configuration</h3>No options available</div>').appendTo('#configMain').hide();
 		});
 		GUI.addConfigMenu('Character', 'user', 'text', function(){
-			var obj = $('<div class="menuPanel"><h3>Character</h3><a href="#" id="changeColors">Change colors</a></div>').appendTo('#configMain').hide();
-			$('#changeColors').click(function(e){
+			var colors = [
+				'6A486B', 'AAA259', 'FBFFE6', 'FB8547', 'FDEC68', '253B57'
+			];
+			var obj = $('<div class="menuPanel"><h3>Character</h3><fieldset class="colorBoxes"><legend>Body color:</legend></fieldset><fieldset class="colorBoxes"><legend>Legs color:</legend></fieldset></div>').appendTo('#configMain').hide();
+			
+			// Insert color boxes
+			$(obj).find('.colorBoxes').each(function(){
+				for(var i=0; i<colors.length; i++){
+					$(this).append('<a href="#changeColor" class="box-small" style="background:'+colors[i]+'"></a>');
+				}
+			});
+			
+			
+			$('a[href=changeColors]').click(function(e){
 				e.preventDefault();
 				console.log("Changing colors");
 				OpenRPG.character.changeColors({

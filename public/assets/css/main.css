@@ -157,15 +157,17 @@ input[type=submit]:hover{
 	margin-left: 30px;
 	position: absolute;
 	top: 10px;
-	left: -200px;
+	left: -261px;
 	background: #222;
 	color: #efefef;
 	padding: 10px;
-	width: 139px;
+	width: 200px;
 	border: solid 1px #000;
 	display:none;
 	border-radius:3px;
 	text-shadow:#000 0 -2px 0px;
+	box-shadow:#111 0 0 10px;
+	font-size:0.9em;
 }
 #overlay{
 	width:100%;
@@ -174,6 +176,32 @@ input[type=submit]:hover{
 	position:absolute;
 	top:0;
 	left:0;
+}
+#configMain h3{
+	border-radius: 3px;
+	background: #444;
+	margin: -10px;
+	padding: 3px 10px;
+	margin-bottom: 5px;
+	border-bottom: solid 1px rgba(0,0,0,0.4);
+}
+#configMain fieldset{
+	margin:0 -10px;
+	border:solid 1px #000;
+	border-left:none;
+	border-right:none;
+	/* ------ GRADIENT, COMPLETELY UNNECESSARY ------ */
+	background: -moz-linear-gradient(top, rgba(30,87,153,0) 0%, rgba(15,44,77,0) 50%, rgba(0,0,0,0.23) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(30,87,153,0)), color-stop(50%,rgba(15,44,77,0)), color-stop(100%,rgba(0,0,0,0.23))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(30,87,153,0) 0%,rgba(15,44,77,0) 50%,rgba(0,0,0,0.23) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(30,87,153,0) 0%,rgba(15,44,77,0) 50%,rgba(0,0,0,0.23) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, rgba(30,87,153,0) 0%,rgba(15,44,77,0) 50%,rgba(0,0,0,0.23) 100%); /* IE10+ */
+	background: linear-gradient(to bottom, rgba(30,87,153,0) 0%,rgba(15,44,77,0) 50%,rgba(0,0,0,0.23) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#001e5799', endColorstr='#3b000000',GradientType=0 ); /* IE6-9 */
+}
+#configMain legend{
+	color:#aaa;
+	padding:0 5px;
 }
 /* ----- ARROWS ------ */
 .arrow-right-small{
@@ -187,4 +215,12 @@ input[type=submit]:hover{
 	position:absolute;
 	top:10px;
 	right:-10px;
+}
+/* ----- CLASSES ------- */
+.box-small{
+	display:inline-block;
+	width:1em;
+	height:1em;
+	border:#000000 solid 1px;
+	margin:0 2px;
 }
