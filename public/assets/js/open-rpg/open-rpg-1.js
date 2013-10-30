@@ -61,6 +61,14 @@ define(["jquery", "socket"], function($, io){
 		if(OpenRPG.user.id !== null && OpenRPG.user.id > 0) return true;
 		return false;
 	};
+	
+	/**
+	 * Returns a random rgba color
+	 * @return {String} Color in RGBA format 
+	 */
+	OpenRPG.randColor = function(){
+		return 'rgba('+Math.ceil(10+Math.random()*245)+','+Math.ceil(10+Math.random()*245)+','+Math.ceil(10+Math.random()*245)+',1)';
+	};
 
 	return OpenRPG;
 });

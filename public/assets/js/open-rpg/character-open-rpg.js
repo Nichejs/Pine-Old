@@ -7,7 +7,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 	 * @param {Object} Character properties {name : xxx ...} 
 	 */
 	Character.newCharacter = function(properties){
-		var person = Character.defineCharacter(properties.position);
+		var person = Character.defineCharacter(properties.position, properties.colors);
 		person.name = properties.name;
 		if(properties.movable)
 			Character.move(person);
@@ -26,7 +26,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 	};
 	
 	// function for creating a character with a body and 2 legs
-	Character.defineCharacter = function(centerp) {
+	Character.defineCharacter = function(centerp, colors) {
 		// character definition for animation with sheet motion
 		var body = new sheetengine.Sheet({x:0,y:0,z:15}, {alphaD:0,betaD:0,gammaD:0}, {w:11,h:14});
 		var backhead = new sheetengine.Sheet({x:0,y:-1,z:19}, {alphaD:0,betaD:0,gammaD:0}, {w:8,h:6});
@@ -34,7 +34,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		backhead.context.fillRect(0,0,8,6);
 		// legs
 		var leg1 = new sheetengine.Sheet({x:-3,y:0,z:4}, {alphaD:0,betaD:0,gammaD:0}, {w:5,h:8});
-		var legColor = 'rgba('+Math.ceil(10+Math.random()*245)+','+Math.ceil(10+Math.random()*245)+','+Math.ceil(10+Math.random()*245)+',1)';
+		var legColor = colors.legs;
 		leg1.context.fillStyle = legColor;
 		leg1.context.fillRect(0,0,5,10);
 		var leg2 = new sheetengine.Sheet({x:3,y:0,z:4}, {alphaD:0,betaD:0,gammaD:0}, {w:5,h:8});
@@ -58,7 +58,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		ctx.fillRect(8,2,1,1);
 		
 		// body
-		ctx.fillStyle = 'rgba('+Math.ceil(10+Math.random()*245)+','+Math.ceil(10+Math.random()*245)+','+Math.ceil(10+Math.random()*245)+',1)';
+		ctx.fillStyle = colors.body;
 		ctx.fillRect(0,6,11,7);
 		  
 		// hands
@@ -71,6 +71,23 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		character.jumpspeed = 10;
 		
 		MapOpenRPG.redraw();
+		
+		character.changeColors = function(newColors){
+			// Legs
+			leg1.context.fillStyle = newColors.legs;
+			leg1.context.fillRect(0,0,5,10);
+			leg2.context.fillStyle = newColors.legs;
+			leg2.context.fillRect(0,0,5,10);
+			// Body
+			body.context.fillStyle = newColors.body;
+			body.context.fillRect(0,6,11,7);
+			// Update
+			leg1.canvasChanged();
+			leg2.canvasChanged();
+			body.canvasChanged();
+			// Redraw
+			MapOpenRPG.redraw();
+		};
 		
 		/**
 		 * Moves the character to specified position, takes care of orientation

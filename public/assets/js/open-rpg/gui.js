@@ -32,7 +32,15 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
 			return $('<div class="menuPanel"><h3>Config</h3>No options available</div>').appendTo('#configMain').hide();
 		});
 		GUI.addConfigMenu('Character', 'user', 'text', function(){
-			var obj = $('<div class="menuPanel"><h3>Character</h3>No options available</div>').appendTo('#configMain').hide();
+			var obj = $('<div class="menuPanel"><h3>Character</h3><a href="#" id="changeColors">Change colors</a></div>').appendTo('#configMain').hide();
+			$('#changeColors').click(function(e){
+				e.preventDefault();
+				console.log("Changing colors");
+				OpenRPG.character.changeColors({
+					legs : OpenRPG.randColor(),
+					body : OpenRPG.randColor()
+				});
+			});
 			return obj;
 		});
 		GUI.addConfigMenu('Log out', 'power-off', 'exec', function(){

@@ -114,7 +114,11 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket", "gui
 			OpenRPG.character = Character.newCharacter({
 				position: {x:110,y:0,z:0},
 				movable: true,
-				name: OpenRPG.user.name
+				name: OpenRPG.user.name,
+				colors : {
+					legs : OpenRPG.randColor(),
+					body : OpenRPG.randColor()
+				}
 			});
 			
 			// Circle around character test
@@ -191,7 +195,11 @@ define(["jquery", "open_rpg", "chat", "map", "tree", "character", "socket", "gui
 				App.players[data.user] = Character.newCharacter({
 					position : data.position,
 					movable : false,
-					name : data.user
+					name : data.user,
+					colors : {
+						legs : OpenRPG.randColor(),
+						body : OpenRPG.randColor()
+					}
 				});
 			}
 		});
