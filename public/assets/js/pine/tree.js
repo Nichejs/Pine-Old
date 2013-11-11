@@ -1,4 +1,4 @@
-define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, OpenRPG){ //Module name
+define(["sheetengine", "map", "main"],function(sheetengine, Map, Main){
 
 	var Tree = {};
 
@@ -60,9 +60,9 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		
 		var treeSheets = [sheet4,sheet5];
 		
-		MapOpenRPG.addToDensityMap(treeSheets);
+		Map.addToDensityMap(treeSheets);
 		
-		MapOpenRPG.redraw();
+		Map.redraw();
 	};
 
 	return Tree;

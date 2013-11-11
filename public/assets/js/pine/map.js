@@ -6,9 +6,9 @@
  * License: GNU GENERAL PUBLIC LICENSE
  */
 
-define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
+define(["main", "sheetengine"],function(Main, sheetengine){
 
-	var MapOpenRPG = {
+	var Map = {
 		// Config options
 		densityMap : new sheetengine.DensityMap(5),
 		drawFlag : true,
@@ -21,19 +21,19 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	/**
 	 * Set up the map and main character 
 	 */
-	MapOpenRPG.init = function(){
-		MapOpenRPG.setTime(12);
+	Map.init = function(){
+		Map.setTime(12);
 		
-		MapOpenRPG.drawBaseSheet(OpenRPG.canvas.canvasElement, OpenRPG.canvas.size);
+		Map.drawBaseSheet(Main.canvas.canvasElement, Main.canvas.size);
 		
 		// Now we set up the interval for the redraw method
 		// Read the description of the redraw method for more info
-		MapOpenRPG.redrawInterval = setInterval(function(){
-			if(!MapOpenRPG.redrawFlag) return;
+		Map.redrawInterval = setInterval(function(){
+			if(!Map.redrawFlag) return;
 			// Flag was set to true, redraw and reset flag
-			MapOpenRPG.redrawFlag = false;
+			Map.redrawFlag = false;
 			
-			MapOpenRPG.drawChanges();
+			Map.drawChanges();
 		}, 30);
 		
 		
@@ -45,7 +45,7 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
  	 * @param {Object} Reference to the canvas element
 	 * @param {Object} Domensions of the canvas element {w,h}
 	 */
-	MapOpenRPG.drawBaseSheet = function(canvasElement, size){
+	Map.drawBaseSheet = function(canvasElement, size){
 		sheetengine.scene.init(canvasElement, size);
 		var num = 3;
 		// Define some basesheets
@@ -59,7 +59,7 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 			}
 		}
 		
-		MapOpenRPG.draw();
+		Map.draw();
 	};
 	
 	/**
@@ -68,10 +68,10 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	 * @param {Object} Real life coordinates {x:_,y:_}
 	 * @returns {Object} An object with the coordinates {x:_,y:_}
 	 */
-	MapOpenRPG.coordsRealToGame = function(coords){
+	Map.coordsRealToGame = function(coords){
 		var pxy = sheetengine.transforms.inverseTransformPoint({u:coords.y+sheetengine.scene.center.u, v:coords.x+sheetengine.scene.center.v});
-		pxy.x = (pxy.x - sheetengine.scene.center.x) / MapOpenRPG.zoomLevel + sheetengine.scene.center.x;
-		pxy.y = (pxy.y - sheetengine.scene.center.y) / MapOpenRPG.zoomLevel + sheetengine.scene.center.y;
+		pxy.x = (pxy.x - sheetengine.scene.center.x) / Map.zoomLevel + sheetengine.scene.center.x;
+		pxy.y = (pxy.y - sheetengine.scene.center.y) / Map.zoomLevel + sheetengine.scene.center.y;
 		return pxy;
 	};
 	
@@ -80,7 +80,7 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	 * @param {Object} A point in the game {x,y,z}
 	 * @return {Object} A canvas coordinate object {u,v}
 	 */
-	MapOpenRPG.coordsGameToCanvas = function(point){
+	Map.coordsGameToCanvas = function(point){
 		return sheetengine.drawing.getPointuv(point);
 	};
 	
@@ -93,26 +93,26 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	 * @param {Object} Array key, username for example
 	 * @param {function} A function to be executed
 	 */
-	MapOpenRPG.addToStaticQueue = function(id, fn){
-		MapOpenRPG.staticQueue[id] = fn;
+	Map.addToStaticQueue = function(id, fn){
+		Map.staticQueue[id] = fn;
 	};
 	
 	/**
 	 * Removes an element from the static queue
 	 * @param {Object} Array key, username for example
 	 */
-	MapOpenRPG.removeFromStaticQueue = function(id){
-		delete MapOpenRPG.staticQueue[id];
+	Map.removeFromStaticQueue = function(id){
+		delete Map.staticQueue[id];
 	};
 	
 	/**
 	 * This executes the functions stored in the queue (if any)
 	 * Should only be called from the draw functions. 
 	 */
-	MapOpenRPG.executeStaticQueue = function(){
+	Map.executeStaticQueue = function(){
 		// Using for..in because indixes might not be numbers
-		for(var index in MapOpenRPG.staticQueue) {
-			MapOpenRPG.staticQueue[index]();
+		for(var index in Map.staticQueue) {
+			Map.staticQueue[index]();
 		}
 	};
 	
@@ -124,29 +124,29 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	 * this way when many people move it will only draw every fixed time, improving 
 	 * performance.
 	 */
-	MapOpenRPG.redraw = function(){
-		MapOpenRPG.redrawFlag = true;
+	Map.redraw = function(){
+		Map.redrawFlag = true;
 	};
 	
 	/**
 	 * Only call after adding static stuff!
 	 * This will redraw all the changed sheets again. 
 	 */
-	MapOpenRPG.drawChanges = function(){
+	Map.drawChanges = function(){
 		sheetengine.calc.calculateChangedSheets();
 		sheetengine.drawing.drawScene(true);
 		
 		// Execute the static queue
-		MapOpenRPG.executeStaticQueue();
+		Map.executeStaticQueue();
 	};
 	
 	/**
 	 * Draw scene from scratch
 	 */
-	MapOpenRPG.draw = function(){
+	Map.draw = function(){
 		// Check flag, this way we ensure it is only drawn once.
-		if(!MapOpenRPG.drawFlag) return false;
-		MapOpenRPG.drawFlag = false;
+		if(!Map.drawFlag) return false;
+		Map.drawFlag = false;
 		sheetengine.calc.calculateAllSheets();
 		sheetengine.drawing.drawScene(true);
 	};
@@ -155,8 +155,8 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	 * Add sheets to the density map for collision detection 
 	 * @param {Object} Sheets to be added
 	 */
-	MapOpenRPG.addToDensityMap = function(sheets){
-		MapOpenRPG.densityMap.addSheets(sheets);
+	Map.addToDensityMap = function(sheets){
+		Map.densityMap.addSheets(sheets);
 	};
 	
 	/**
@@ -171,7 +171,7 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 	 * 
 	 * @param {ing} Hour of the day in 24h format, no minutes.
 	 */
-	MapOpenRPG.setTime = function(time){
+	Map.setTime = function(time){
 		
 		// During the night shadows are gone, and we overlay a div
 		// to simulate the different lighting.
@@ -213,7 +213,7 @@ define(["open_rpg", "sheetengine"],function(OpenRPG, sheetengine){
 		sheetengine.shadows.shadeAlpha = 0.6;
 	};
 	
-	return MapOpenRPG;
+	return Map;
 });
 
 

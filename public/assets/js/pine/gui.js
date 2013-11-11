@@ -8,7 +8,7 @@
  * License: GNU GENERAL PUBLIC LICENSE
  */
 
-define(["jquery", "open_rpg"], function($, OpenRPG){
+define(["jquery", "main"], function($, Main){
 	var GUI = {
 		characterStatus: null,
 		armorBar: null,
@@ -19,13 +19,13 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
 	};
 	
 	GUI.init = function(){
-		GUI.characterStatus = $('<div id="characterStatus"></div>').appendTo(OpenRPG.container);
+		GUI.characterStatus = $('<div id="characterStatus"></div>').appendTo(Main.container);
 		// Extra things are hidden by default
 		GUI.armorBar = $('<div class="bar" id="armorBar"></div>').appendTo(GUI.characterStatus);
 		GUI.healthBar = $('<div class="bar" id="healthBar"></div>').appendTo(GUI.characterStatus).show();
 		
 		// Display character config button
-		GUI.configScreen = $('<div id="configContainer"><div id="configIcons"><ul></ul></div><div id="configMain"><i id="configMenuArrow" class="arrow-right-small"></i></div></div>').appendTo(OpenRPG.container);
+		GUI.configScreen = $('<div id="configContainer"><div id="configIcons"><ul></ul></div><div id="configMain"><i id="configMenuArrow" class="arrow-right-small"></i></div></div>').appendTo(Main.container);
 		
 		// Add initial config menu entries
 		GUI.addConfigMenu('Configuration', 'gear', 'text', function(){
@@ -48,9 +48,9 @@ define(["jquery", "open_rpg"], function($, OpenRPG){
 			$('a[href=changeColors]').click(function(e){
 				e.preventDefault();
 				console.log("Changing colors");
-				OpenRPG.character.changeColors({
-					legs : OpenRPG.randColor(),
-					body : OpenRPG.randColor()
+				Main.character.changeColors({
+					legs : Main.randColor(),
+					body : Main.randColor()
 				});
 			});
 			return obj;

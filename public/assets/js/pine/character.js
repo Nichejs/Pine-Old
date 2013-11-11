@@ -1,4 +1,4 @@
-define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, OpenRPG){
+define(["sheetengine", "map", "main"],function(sheetengine, Map, Main){
 	
 	var Character = {};
 	
@@ -12,11 +12,11 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		if(properties.movable)
 			Character.move(person);
 		// Insert a function to draw the player name
-		MapOpenRPG.addToStaticQueue(properties.name, function(){
+		Map.addToStaticQueue(properties.name, function(){
 			var ctx = sheetengine.context;
 			// Creating pos as follows will avoid referencing.
 			var pos = {x: properties.position.x, y: properties.position.y, z: properties.position.z + 30};
-			var p = MapOpenRPG.coordsGameToCanvas(pos);
+			var p = Map.coordsGameToCanvas(pos);
 			ctx.font="13px Helvetica, sans-serif";
 			ctx.strokeStyle = 'black';
 			ctx.lineWidth = 1;
@@ -70,7 +70,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		
 		character.jumpspeed = 10;
 		
-		MapOpenRPG.redraw();
+		Map.redraw();
 		
 		character.changeColors = function(newColors){
 			// Legs
@@ -86,7 +86,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 			leg2.canvasChanged();
 			body.canvasChanged();
 			// Redraw
-			MapOpenRPG.redraw();
+			Map.redraw();
 		};
 		
 		/**
@@ -116,7 +116,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 			Character.animateCharacter(character);
 			character.animationState++;
 			
-			MapOpenRPG.redraw();
+			Map.redraw();
 		};
 		
 		/**
@@ -128,14 +128,14 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		character.addCircle = function(width, color){
 			// draw arc around user
 			// Insert a function to draw the player name
-			MapOpenRPG.addToStaticQueue(character.name+'_circle', function(){
+			Map.addToStaticQueue(character.name+'_circle', function(){
 				var ctx = sheetengine.context;
 				ctx.save();
 				ctx.scale(1, 0.5);
 				ctx.lineWidth = width;
 				ctx.strokeStyle = color;
 				ctx.beginPath();
-				var userp = MapOpenRPG.coordsGameToCanvas(character.centerp);
+				var userp = Map.coordsGameToCanvas(character.centerp);
 				ctx.arc(userp.u, userp.v*2, 15, 0, Math.PI*2);
 				ctx.stroke();
 				ctx.restore();
@@ -146,7 +146,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		 * Removes the circle around a user 
 		 */
 		character.removeCircle = function(){
-			MapOpenRPG.removeFromStaticQueue(character.name+'_circle');
+			Map.removeFromStaticQueue(character.name+'_circle');
 		};
 		
 		return character;
@@ -181,7 +181,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 		setInterval(function(){
 			if(!character.moved) return;
 			// Stream position data
-			OpenRPG.socket.emit('send', { room: 'position', position : character.centerp });
+			Main.socket.emit('send', { room: 'position', position : character.centerp });
 			character.moved = false;
 		}, 15);
 		
@@ -250,7 +250,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 			jumpspeed -= 2;
 			
 			// get allowed target point. character's height is 20, and character can climb up to 10 pixels
-			var targetInfo = MapOpenRPG.densityMap.getTargetPoint(character.centerp, {x:dx, y:dy, z:jumpspeed}, 20, 10);
+			var targetInfo = Map.densityMap.getTargetPoint(character.centerp, {x:dx, y:dy, z:jumpspeed}, 20, 10);
 			var allowMove = targetInfo.allowMove;
 			var targetp = targetInfo.targetp;
 			var stopFall = targetInfo.stopFall;
@@ -275,7 +275,7 @@ define(["sheetengine", "map", "open_rpg"],function(sheetengine, MapOpenRPG, Open
 				character.moved = true;
 				 
 				// Calculate sheets and draw scene
-				MapOpenRPG.redraw();
+				Map.redraw();
 			}
 		}
 		
